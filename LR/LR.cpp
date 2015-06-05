@@ -122,6 +122,5 @@ void LR::dump_model(const char* model_file_name) {
 void LR::load_model(const char* model_file_name) {
 
 }
-
 }
 }
