@@ -24,11 +24,15 @@ public:
 	bool stochatic_gradient_descent(std::vector<float> &w,
 			float learning_rate,
 			const std::vector<std::vector<float> > &feature,
-			const std::vector<int32_t> &label) ;
+			const std::vector<int32_t> &label,
+			float reg_type,
+			float lambda) ;
 	void gradient_descent(std::vector<float> &w,
 			float learning_rate,
 			const std::vector<std::vector<float> > &feature,
-			const std::vector<int32_t> &label) ;
+			const std::vector<int32_t> &label,
+			float reg_type,
+			float lambda) ;
 
 	void set_parameter(int32_t max_iter_cnt,
 			float learning_rate,

@@ -30,11 +30,20 @@
 #define MIN_MAX_NOR_TYPE 0
 #define SQUARE_NOR_TYPE 1
 
+// regularization
+#define REG_L1 0
+#define REG_L2 1
+
 namespace suml {
 namespace util {
 
 void split(const std::string &line, char tag, std::vector<std::string> &vctSplitRes) ;
 
 }
+
+
+
+
+
 }
 #endif

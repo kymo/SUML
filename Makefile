@@ -1,41 +1,28 @@
-MODEL_O=Model.o
-MODEL_SRC=./Model/Model.cpp
-MODEL_INC=./Model
 
-LR_O=LR.o
-LR_SRC=./LR/LR.cpp
-LR_INC=./LR
-
-TEST_LR_O=test_lr.o
-TEST_LR_SRC=./LR/test_lr.cpp
-
-TEST_LR=lr
-
-UTIL_INC=Util/
-UTIL_O=Util.o
-UTIL_SRC=./Util/Util.cpp
 GCC=g++
+DIR=$(shell pwd)
+TEST_LR_SRC=${DIR}/LR/test_lr.cpp
+TEST_LR_O=${DIR}/Obj/test_lr.o ${DIR}/Obj/LR.o ${DIR}/Obj/Model.o ${DIR}/Obj/Util.o
 
-${TEST_LR}:${LR_O} ${TEST_LR_O} ${MODEL_O} ${UTIL_O}
-	${GCC} -o ${TEST_LR} ${LR_O} ${TEST_LR_O} ${MODEL_O} ${UTIL_O} -I ${MODEL_INC} -I ${LR_INC} -I ${UTIL_INC}
+TEST_LR=${DIR}/lr
+INC=-I ${DIR}/LR -I ${DIR}/Model -I ${DIR}/Util -I ${DIR}/Matrix
+
+${TEST_LR}:${TEST_LR_O}
+	${GCC} -o ${TEST_LR} ${TEST_LR_O} ${INC}
 
 ${TEST_LR_O}:${TEST_LR_SRC}
-	${GCC} -c ${TEST_LR_SRC} -g  -I ${MODEL_INC} -I ${LR_INC} -I ${UTIL_INC} 
+	${GCC} -c ${TEST_LR_SRC} -o ${TEST_LR_O} ${INC}
 
-
-
-
-
-${LR_O}:${LR_SRC}
-	${GCC} -c ${LR_SRC} -g -I ${LR_INC} -I ${MODEL_INC} -I ${UTIL_INC}
-
-
-#	
-${MODEL_O}:${MODEL_SRC}
-	${GCC} -c ${MODEL_SRC} -I${MODEL_INC} -I ${UTIL_INC}
-
-${UTIL_O}:${UTIL_SRC}
-	${GCC} -c ${UTIL_SRC} -I${UTIL_INC}
 
 clean:
-	rm -rf *.o
+	cd LR;make clean;
+	cd Model;make clean;
+	cd Util;make clean;
+	cd Matrix;make clean;
+
+all:
+	cd LR;make;
+	cd Model;make;
+	cd Util;make;
+	cd Matrix;make;
+	make;
