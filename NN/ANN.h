@@ -12,7 +12,8 @@
 namespace suml {
 namespace nn {
 
-class ANN : public suml::model::Model {
+class ANN : public suml::model::Model<int32_t> {
+	
 private:
 	std::vector<std::vector<float> > _dis_label;
 	

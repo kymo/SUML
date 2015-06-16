@@ -7,13 +7,13 @@ INC=-I ${DIR}/LR -I ${DIR}/Model -I ${DIR}/Util -I ${DIR}/Matrix -I ${DIR}/NN
 ## Logistic Regression Test
 TEST_LR_SRC=${DIR}/LR/test_lr.cpp
 TEST_LR_O=${DIR}/Obj/test_lr.o 
-TEST_LR_ALIAS_O=${DIR}/Obj/LR.o ${DIR}/Obj/Model.o ${DIR}/Obj/Util.o
+TEST_LR_ALIAS_O=${DIR}/Obj/LR.o ${DIR}/Obj/Util.o
 TEST_LR=${DIR}/lr
 
 ## Neural Network Test
 TEST_NN_SRC=${DIR}/NN/test_ann.cpp
 TEST_NN_O=${DIR}/Obj/test_nn.o 
-TEST_NN_ALIAS_O=${DIR}/Obj/ANN.o ${DIR}/Obj/Model.o ${DIR}/Obj/Util.o
+TEST_NN_ALIAS_O=${DIR}/Obj/ANN.o ${DIR}/Obj/Util.o
 TEST_NN=${DIR}/nn
 
 all:${TEST_NN} ${TEST_LR}

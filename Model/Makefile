@@ -1,7 +1,8 @@
 DIR=$(shell pwd)
 
 MODEL_O=${DIR}/../Obj/Model.o
-MODEL_SRC=${DIR}/Model.cpp
+
+MODEL_SRC=${DIR}/Model.h
 INC=-I ${DIR}/ -I ${DIR}/../Util
 
 GCC=g++

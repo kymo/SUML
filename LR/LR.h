@@ -7,7 +7,7 @@
 namespace suml {
 namespace lr {
 
-class LR : public suml::model::Model {
+class LR : public suml::model::Model<int32_t> {
 
 public:
 	int32_t _max_iter_cnt;
