@@ -1,8 +1,7 @@
 
 /* test tree */
 
-#include "gbdt.h"
-#include "gbdt.cpp"
+#include "GBDT.h"
 
 int main(int argv, char* argc[]) {
 
@@ -59,10 +58,10 @@ int main(int argv, char* argc[]) {
 	bool isMultiThreadOn = atoi(argc[7]);
 
     // train the regreTree 
-	gbdt::GradientBoostingTree<float> *g = new gbdt::GradientBoostingRegressionTree<float>(treeNum, maxDepth, maxNodePath, minSampleCnt, learningRate, isMultiThreadOn);
+	suml::gbdt::GradientBoostingRegressionTree *g = new suml::gbdt::GradientBoostingRegressionTree(treeNum, maxDepth, maxNodePath, minSampleCnt, learningRate, isMultiThreadOn);
 	
 	clock_t start = clock();
-	g->train(vctTrainFeature, vctTrainLabel);
+	g->train(DEFAULT);
 	clock_t end = clock();
 
 	std::cout << "Cost:" << end - start << std::endl;

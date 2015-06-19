@@ -33,8 +33,14 @@ TEST_CAL_TREE_O=${DIR}/Obj/test_cla_tree.o
 TEST_CAL_TREE_ALIAS_O=${DIR}/Obj/RegTree.o ${DIR}/Obj/Util.o -lpthread ${DIR}/Obj/Feature.o
 TEST_CAL_TREE=${DIR}/Bin/cla_tree
 
+## gradient boosting decision tree test
+TEST_GBDT_SRC=${DIR}/Tree/test_gbdt.cpp
+TEST_GBDT_O=${DIR}/Obj/test_gbdt.o
+TEST_GBDT_ALIAS_O=${DIR}/Obj/RegTree.o ${DIR}/Obj/Util.o -lpthread ${DIR}/Obj/Feature.o ${DIR}/Obj/GBDT.o
+TEST_GBDT=${DIR}/Bin/gbdt
 
-all:${TEST_NN} ${TEST_LR} ${TEST_REG_TREE} ${TEST_CAL_TREE}
+
+all:${TEST_NN} ${TEST_LR} ${TEST_REG_TREE} ${TEST_CAL_TREE} ${TEST_GBDT}
 
 .PHONY : all target clean
 
@@ -65,6 +71,13 @@ ${TEST_CAL_TREE}:${TEST_CAL_TREE_O}
 
 ${TEST_CAL_TREE_O}:${TEST_CAL_TREE_SRC}
 	${GCC} -c ${TEST_CAL_TREE_SRC} -o ${TEST_CAL_TREE_O} ${INC}
+
+# generate gbdt runable program
+${TEST_GBDT}:${TEST_GBDT_O}
+	${GCC} -o ${TEST_GBDT} ${TEST_GBDT_O} ${TEST_GBDT_ALIAS_O} ${INC}
+
+${TEST_GBDT_O}:${TEST_GBDT_SRC}
+	${GCC} -c ${TEST_GBDT_SRC} -o ${TEST_GBDT_O} ${INC}
 
 clean:
 	cd LR;make clean;
