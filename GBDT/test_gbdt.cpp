@@ -24,7 +24,7 @@ int main(int argv, char* argc[]) {
         sampleCnt += 1;
         std::vector<float> tempFeature;
 		std::vector<std::string> vctSplitRes;
-        util::split(line, '\t', vctSplitRes);
+		suml::util::split(line, '\t', vctSplitRes);
 		for (size_t i = 0; i < vctSplitRes.size(); i ++) {
             if (i + 1 < vctSplitRes.size()) {
                 tempFeature.push_back(atof(vctSplitRes[i].c_str()));

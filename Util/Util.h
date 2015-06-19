@@ -9,9 +9,12 @@
 #include <set>
 #include <cmath>
 #include <fstream>
+#include <algorithm>
 #include <stdio.h>
 #include <stdlib.h>
 #include <time.h>
+#include <string>
+#include <string.h>
 #include <math.h>
 #include <limits.h>
 

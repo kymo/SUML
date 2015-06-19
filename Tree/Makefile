@@ -12,6 +12,8 @@ INC=-I ${DIR}/ \
 
 GCC=g++
 
+all: ${RegTree_O} ${ClassifyTree_O}
+
 ${RegTree_O}:${LR_SRC}
 	${GCC} -c ${RegTree_SRC} ${INC} -o ${RegTree_O}
 

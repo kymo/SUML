@@ -7,7 +7,8 @@ INC=-I ${DIR}/LR \
 	-I ${DIR}/Matrix\
    	-I ${DIR}/NN\
 	-I ${DIR}/Tree \
-	-I ${DIR}/Feature 
+	-I ${DIR}/Feature \
+	-I ${DIR}/GBDT
 
 ## Logistic Regression Test
 TEST_LR_SRC=${DIR}/LR/test_lr.cpp
@@ -30,11 +31,11 @@ TEST_REG_TREE=${DIR}/Bin/reg_tree
 ## classification Tree Test (gini)
 TEST_CAL_TREE_SRC=${DIR}/Tree/test_cla_tree.cpp
 TEST_CAL_TREE_O=${DIR}/Obj/test_cla_tree.o
-TEST_CAL_TREE_ALIAS_O=${DIR}/Obj/RegTree.o ${DIR}/Obj/Util.o -lpthread ${DIR}/Obj/Feature.o
+TEST_CAL_TREE_ALIAS_O=${DIR}/Obj/ClassifyTree.o ${DIR}/Obj/Util.o -lpthread ${DIR}/Obj/Feature.o
 TEST_CAL_TREE=${DIR}/Bin/cla_tree
 
 ## gradient boosting decision tree test
-TEST_GBDT_SRC=${DIR}/Tree/test_gbdt.cpp
+TEST_GBDT_SRC=${DIR}/GBDT/test_gbdt.cpp
 TEST_GBDT_O=${DIR}/Obj/test_gbdt.o
 TEST_GBDT_ALIAS_O=${DIR}/Obj/RegTree.o ${DIR}/Obj/Util.o -lpthread ${DIR}/Obj/Feature.o ${DIR}/Obj/GBDT.o
 TEST_GBDT=${DIR}/Bin/gbdt
@@ -86,7 +87,8 @@ clean:
 	cd NN;make clean;
 	cd Feature;make clean;
 	cd Tree;make clean;
-	rm -rf *.o ${TEST_LR} ${TEST_NN} ${TEST_REG_TREE} ${TEST_CAL_TREE}
+	cd GBDT;make clean;
+	rm -rf *.o ${TEST_LR} ${TEST_NN} ${TEST_REG_TREE} ${TEST_CAL_TREE} ${TEST_GBDT}
 	rm -rf ${DIR}/Obj/*.o
 
 target:
@@ -96,4 +98,5 @@ target:
 	cd Matrix;make;
 	cd NN;make;
 	cd Tree;make;
+	cd GBDT;make;
 	make;

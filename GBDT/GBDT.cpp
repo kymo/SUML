@@ -50,6 +50,11 @@ float GradientBoostingRegressionTree::predict(const std::vector<float> &feature)
 	return value * m_fLearningRate;
 }
 
+void GradientBoostingRegressionTree::load_model(const char* model_file_name) {
+}
+
+void GradientBoostingRegressionTree::dump_model(const char* model_file_name) {
+}
 
 }
 

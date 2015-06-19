@@ -15,8 +15,8 @@ int main(int argv, char* argc[]) {
     }
 
     // load feature
-    int sampleCnt = 0, featureCnt = 0;
-    int maxDepth, maxNodePath;
+    int32_t sampleCnt = 0, featureCnt = 0;
+    int32_t maxDepth, maxNodePath;
 	std::ifstream fis(argc[1]);
 	std::string line;
     std::vector<float> vctLabel;
@@ -37,7 +37,7 @@ int main(int argv, char* argc[]) {
         }
         vctFeature.push_back(tempFeature);
     }
-    int splitPos = (int)(0.8 * sampleCnt);
+    int32_t splitPos = (int)(0.8 * sampleCnt);
 	std::vector<int32_t> vCurrentIndex;
 	for (int32_t i = 0; i < splitPos; i ++) {
 		vCurrentIndex.push_back(i);
@@ -66,7 +66,7 @@ int main(int argv, char* argc[]) {
 	
 	std::cout << "here" << std::endl;
 	
-	suml::tree::ClassificationTree* regreTree = new suml::tree::ClassificationTree(maxDepth, maxNodePath, isMultiThreadOn, false);
+	suml::tree::ClassificationTree* regreTree = new suml::tree::ClassificationTree(maxDepth, maxNodePath, isMultiThreadOn, 2, false);
 
 	
 	if (regreTree->getMultiThreadOn()) {
