@@ -5,7 +5,6 @@
 #include <string>
 #include <vector>
 #include <cmath>
-#include <Util.h>
 
 namespace suml {
 namespace matrix {

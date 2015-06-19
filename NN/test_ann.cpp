@@ -1,5 +1,5 @@
-#include "ANN.h"ni 
-
+#include "ANN.h" 
+#include "Feature.h"
 
 int main(int argv, char* argc[]) {
 
@@ -48,7 +48,7 @@ int main(int argv, char* argc[]) {
 	int32_t out_lev_cnt = atoi(argc[5]);
 	int32_t nor_type = atoi(argc[6]);
 
-	ann->feature_normalize(nor_type, vctTrainFeature);	
+	suml::feature::feature_normalize(nor_type, vctTrainFeature);	
   	//ann->feature_normalize(MIN_MAX_NOR_TYPE, vctTestFeature);
 	ann->set_data(vctTrainFeature, vctTrainLabel);
 	ann->set_hid_lev_cnt(hid_lev_cnt);

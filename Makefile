@@ -1,48 +1,86 @@
-
 GCC=g++
 DIR=$(shell pwd)
 
-INC=-I ${DIR}/LR -I ${DIR}/Model -I ${DIR}/Util -I ${DIR}/Matrix -I ${DIR}/NN
+INC=-I ${DIR}/LR \
+	-I ${DIR}/Model\
+   	-I ${DIR}/Util \
+	-I ${DIR}/Matrix\
+   	-I ${DIR}/NN\
+	-I ${DIR}/Tree \
+	-I ${DIR}/Feature 
 
 ## Logistic Regression Test
 TEST_LR_SRC=${DIR}/LR/test_lr.cpp
 TEST_LR_O=${DIR}/Obj/test_lr.o 
-TEST_LR_ALIAS_O=${DIR}/Obj/LR.o ${DIR}/Obj/Util.o
-TEST_LR=${DIR}/lr
+TEST_LR_ALIAS_O=${DIR}/Obj/LR.o ${DIR}/Obj/Util.o ${DIR}/Obj/Feature.o
+TEST_LR=${DIR}/Bin/lr
 
 ## Neural Network Test
-TEST_NN_SRC=${DIR}/NN/test_ann.cpp
+TEST_NN_SRC=${DIR}/NN/test_ann.cpp 
 TEST_NN_O=${DIR}/Obj/test_nn.o 
-TEST_NN_ALIAS_O=${DIR}/Obj/ANN.o ${DIR}/Obj/Util.o
-TEST_NN=${DIR}/nn
+TEST_NN_ALIAS_O=${DIR}/Obj/ANN.o ${DIR}/Obj/Util.o ${DIR}/Obj/Feature.o
+TEST_NN=${DIR}/Bin/nn
 
-all:${TEST_NN} ${TEST_LR}
+## regression Tree Test (variance)
+TEST_REG_TREE_SRC=${DIR}/Tree/test_reg_tree.cpp
+TEST_REG_TREE_O=${DIR}/Obj/test_reg_tree.o
+TEST_REG_TREE_ALIAS_O=${DIR}/Obj/RegTree.o ${DIR}/Obj/Util.o -lpthread ${DIR}/Obj/Feature.o
+TEST_REG_TREE=${DIR}/Bin/reg_tree
 
+## classification Tree Test (gini)
+TEST_CAL_TREE_SRC=${DIR}/Tree/test_cla_tree.cpp
+TEST_CAL_TREE_O=${DIR}/Obj/test_cla_tree.o
+TEST_CAL_TREE_ALIAS_O=${DIR}/Obj/RegTree.o ${DIR}/Obj/Util.o -lpthread ${DIR}/Obj/Feature.o
+TEST_CAL_TREE=${DIR}/Bin/cla_tree
+
+
+all:${TEST_NN} ${TEST_LR} ${TEST_REG_TREE} ${TEST_CAL_TREE}
+
+.PHONY : all target clean
+
+# generate LR test runable program
 ${TEST_LR}:${TEST_LR_O}
 	${GCC} -o ${TEST_LR} ${TEST_LR_O} ${TEST_LR_ALIAS_O} ${INC}
 
 ${TEST_LR_O}:${TEST_LR_SRC}
 	${GCC} -c ${TEST_LR_SRC} -o ${TEST_LR_O} ${INC}
 
-
+# generate neural network runable program
 ${TEST_NN}:${TEST_NN_O}
 	${GCC} -o ${TEST_NN} ${TEST_NN_O} ${TEST_NN_ALIAS_O} ${INC}
 
 ${TEST_NN_O}:${TEST_NN_SRC}
 	${GCC} -c ${TEST_NN_SRC} -o ${TEST_NN_O} ${INC}
 
+# generate regression tree runable program
+${TEST_REG_TREE}:${TEST_REG_TREE_O}
+	${GCC} -o ${TEST_REG_TREE} ${TEST_REG_TREE_O} ${TEST_REG_TREE_ALIAS_O} ${INC}
+
+${TEST_REG_TREE_O}:${TEST_REG_TREE_SRC}
+	${GCC} -c ${TEST_REG_TREE_SRC} -o ${TEST_REG_TREE_O} ${INC}
+
+# generate classification tree runable program
+${TEST_CAL_TREE}:${TEST_CAL_TREE_O}
+	${GCC} -o ${TEST_CAL_TREE} ${TEST_CAL_TREE_O} ${TEST_CAL_TREE_ALIAS_O} ${INC}
+
+${TEST_CAL_TREE_O}:${TEST_CAL_TREE_SRC}
+	${GCC} -c ${TEST_CAL_TREE_SRC} -o ${TEST_CAL_TREE_O} ${INC}
+
 clean:
 	cd LR;make clean;
-	cd Model;make clean;
 	cd Util;make clean;
 	cd Matrix;make clean;
 	cd NN;make clean;
-	rm -rf *.o ${TEST_LR} ${TEST_NN}
+	cd Feature;make clean;
+	cd Tree;make clean;
+	rm -rf *.o ${TEST_LR} ${TEST_NN} ${TEST_REG_TREE} ${TEST_CAL_TREE}
+	rm -rf ${DIR}/Obj/*.o
 
 target:
 	cd LR;make;
-	cd Model;make;
 	cd Util;make;
+	cd Feature;make;
 	cd Matrix;make;
 	cd NN;make;
+	cd Tree;make;
 	make;
