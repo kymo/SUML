@@ -1,13 +1,14 @@
 DIR=$(shell pwd)
 
-LR_O=${DIR}/../Obj/GBDT.o
-LR_SRC=${DIR}/GBDT.cpp
-INC=-I ${DIR}/ -I ${DIR}/../Model -I ${DIR}/../Util
+GBDT_O=${DIR}/../Obj/GBDT.o
+GBDT_SRC=${DIR}/GBDT.cpp
+
+INC=-I ${DIR}/ -I ${DIR}/../Model -I ${DIR}/../Util -I ${DIR}/../Tree
 
 GCC=g++
 
-${LR_O}:${LR_SRC}
-	${GCC} -c ${LR_SRC} -g ${INC} -o ${LR_O}
+${GBDT_O}:${GBDT_SRC}
+	${GCC} -c ${GBDT_SRC} -g ${INC} -o ${GBDT_O}
 
 
 clean:
