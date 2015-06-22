@@ -199,7 +199,7 @@ void Tree<T>::train() {
 				vCurrentIndex, 
 				vFeatureIndex
 	);
-	//display();
+	display();
 }
 
 template <class T>
@@ -220,6 +220,7 @@ void Tree<T>::display() {
 		treeNodeQueue.pop();
 
 		std::cout << "Node: " << top->index << ",Father " << levelMap[top] << std::endl;
+		std::cout << "Lev: " << top->level << std::endl;
 		std::cout << "OptFeatureIndex: " << top->m_nCurrentOptSplitIndex << std::endl;
 		std::cout << "CurrentOptSplitValue: " << top->m_fCurrentOptSplitValue << std::endl;
 		std::cout << "Current Sample On this Node:" << std::endl;
@@ -272,7 +273,7 @@ void Tree<T>::buildTree(struct Node<T>* &oTreeNode,
 		std::vector<int32_t> vTmpFeatureIndex(top->m_vFeatureIndexVec.begin(), top->m_vFeatureIndexVec.end());
 		std::vector<int32_t> vTmpCurrentIndex(top->m_vCurrentNodeTampleIndexVec.begin(), top->m_vCurrentNodeTampleIndexVec.end());
 		
-		if (vTmpCurrentIndex.size() == 0) {
+		if (vTmpCurrentIndex.size() == 0 || vTmpFeatureIndex.size() == 0) {
 			continue;
 		}
 		
@@ -293,8 +294,10 @@ void Tree<T>::buildTree(struct Node<T>* &oTreeNode,
 					vTmpCurrentIndex,
 					vTmpFeatureIndex);	
 		}
-		
+	
+		std::cout << "helo" << std::endl;	
 		std::vector<int32_t> vLeftIndex, vRightIndex;
+		
 		splitData(top, 
 				nOptFeatureIndex, 
 				fOptFeatureVal,
@@ -302,15 +305,29 @@ void Tree<T>::buildTree(struct Node<T>* &oTreeNode,
 				vLeftIndex,
 				vRightIndex);	
 
-		if (vLeftIndex.size() == 0 || vRightIndex.size() == 0) {
-			continue ;
+		std::cout << "end" << std::endl;
+		// if (vLeftIndex.size() == 0 || vRightIndex.size() == 0) {
+		// 	continue ;
+		// }
+		
+		// wipe out the feature index
+		
+		if (! getEnsemble()) {
+			vTmpFeatureIndex.erase(remove(vTmpFeatureIndex.begin(), vTmpFeatureIndex.end(), nOptFeatureIndex), 
+					vTmpFeatureIndex.end());
 		}
 		
 		// build left Node
-		if (top->level + 1 < m_nMaxDepth
+#ifdef DEBUG
+		std::cout << vLeftIndex.size() << " " << vRightIndex.size() << " ";
+		std::cout << m_nMaxNodeCnt << " " << m_nMinSampleCnt << " " << " " << top->m_vCurrentNodeTampleIndexVec.size() << std::endl;
+#endif
+		
+		if (vLeftIndex.size() > 0 
+				&& top->level + 1 < m_nMaxDepth
 				&& index < m_nMaxNodeCnt
 				&& top->m_vCurrentNodeTampleIndexVec.size() >= m_nMinSampleCnt) {
-			
+			std::cout << "nihao1" << std::endl;	
 			top->m_oLeft = new Node<T>(vLeftIndex, vTmpFeatureIndex, top->level + 1, index);
 			index += 1;
 			treeNodeQueues.push(top->m_oLeft);
@@ -318,14 +335,18 @@ void Tree<T>::buildTree(struct Node<T>* &oTreeNode,
 		}
 		
 		// build right Node
-		if (top->level + 1 < m_nMaxDepth
+		if (vRightIndex.size() > 0 
+				&& top->level + 1 < m_nMaxDepth
 				&& index < m_nMaxNodeCnt
 				&& top->m_vCurrentNodeTampleIndexVec.size() >= m_nMinSampleCnt) {
+			std::cout << "nihao2" << std::endl;	
 	
 			top->m_oRight = new Node<T>(vRightIndex, vTmpFeatureIndex, top->level + 1, index);
 			index += 1;
 			treeNodeQueues.push(top->m_oRight);
 		}
+
+		
 	}
 }
 

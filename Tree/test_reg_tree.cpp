@@ -63,6 +63,7 @@ int main(int argv, char* argc[]) {
 	std::cout << "here" << std::endl;
 	suml::tree::RegressionTree* regreTree = new suml::tree::RegressionTree(maxDepth, maxNodePath, isMultiThreadOn, false);
 
+	regreTree->getMinSampleCnt() = 5;
 	if (regreTree->getMultiThreadOn()) {
 		std::cout << "ON" << std::endl;
 	} else {

@@ -12,7 +12,7 @@ void GradientBoostingRegressionTree::train(int32_t opt_type) {
 
 	if (0 == _feature.size()) {
 		std::cerr << "Error Input Training Feature!" << std::endl;
-		return ;
+		exit(0) ;
 	}
 	
 	int32_t sampleCnt = _label.size();
@@ -25,7 +25,10 @@ void GradientBoostingRegressionTree::train(int32_t opt_type) {
 
 	for (int32_t i = 0; i < m_nTreeNum; i ++) {	
 		
-		suml::tree::RegressionTree* subTree = new suml::tree::RegressionTree(m_nTreeDepth, m_nNodeCnt, m_bMultiThreadOn, true);
+		suml::tree::RegressionTree* subTree = new suml::tree::RegressionTree(m_nTreeDepth, 
+					m_nNodeCnt, 
+					m_bMultiThreadOn, 
+					true);
 
 		subTree->setData(_feature, m_vGradient);
 
@@ -40,6 +43,7 @@ void GradientBoostingRegressionTree::train(int32_t opt_type) {
 		}
 		trees.push_back(subTree);
 	}	
+	std::cout << m_nTreeNum << " " << std::endl;
 };
 
 float GradientBoostingRegressionTree::predict(const std::vector<float> &feature) {

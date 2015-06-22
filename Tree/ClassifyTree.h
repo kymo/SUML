@@ -2,7 +2,7 @@
 #define __TREE_H__
 
 #include "BaseTree.h"
-
+#include "Feature.h"
 
 namespace suml {
 namespace tree {

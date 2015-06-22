@@ -8,11 +8,11 @@ ClassifyTree_O=${DIR}/../Obj/ClassifyTree.o
 ClassifyTree_SRC=${DIR}/ClassifyTree.cpp
 
 INC=-I ${DIR}/ \
-	-I ${DIR}/../Util
+	-I ${DIR}/../Util\
+	-I ${DIR}/../Feature
 
+all:${RegTree_O} ${ClassifyTree_O}
 GCC=g++
-
-all: ${RegTree_O} ${ClassifyTree_O}
 
 ${RegTree_O}:${LR_SRC}
 	${GCC} -c ${RegTree_SRC} ${INC} -o ${RegTree_O}

@@ -94,23 +94,21 @@ void RegressionTree::optSplitPos(int &nOptFeatureIndex,
 	std::vector<int32_t> vTempFeatureIndex;
 	
 	if (getEnsemble()) {
-		std::cout << "fuck" << std::endl;
 		srand( (unsigned)time(NULL));
 		for (int32_t i = 0; i < vFeatureIndex.size(); ++i) {
 			int32_t t = rand() % vFeatureIndex.size();
 			std::swap(vFeatureIndex[i], vFeatureIndex[t]);
 		}
+		vTempFeatureIndex.assign(vFeatureIndex.begin(),	vFeatureIndex.begin() + getRandFeatureCnt());
+	} else {
+		vTempFeatureIndex.assign(vFeatureIndex.begin(),	vFeatureIndex.end());	
 	}
-		
-	vTempFeatureIndex.assign(vFeatureIndex.begin(),	vFeatureIndex.begin() + getRandFeatureCnt());
-	std::cout << getRandFeatureCnt() << std::endl;
-	for (int i = 0; i < vTempFeatureIndex.size();  ++i) {
-		std::cout << vTempFeatureIndex[i] << " ";
-	}
-	std::cout << std::endl;
 
-	for (int32_t i = 0; i < (int32_t)vTempFeatureIndex.size(); i ++) {
 		
+	std::cout << getRandFeatureCnt() << " " << std::endl;
+	std::cout << vTempFeatureIndex.size() << std::endl;
+	for (int32_t i = 0; i < (int32_t)vTempFeatureIndex.size(); i ++) {
+		std::cout << vTempFeatureIndex[i] << " ";	
 		std::map<int32_t, float> tmpFeatureValue;
 		for (int32_t j = 0; j < vCurrentIndex.size(); j ++) {
 			float tmpVal = getTrainingX()[vCurrentIndex[j]][vTempFeatureIndex[i]];
@@ -143,8 +141,8 @@ void RegressionTree::optSplitPos(int &nOptFeatureIndex,
 						(vTempCurrentIndex.size() - j - 1);
 			}
 #ifdef DEBG
-			std::cout << vTempCurrentIndex.size() << " " << tmpFeatureValue.size() << std::endl;
-			std::cout << curDevia << " " << vTempFeatureIndex[i] << " " << tmpFeatureValue[vTempCurrentIndex[j]] << std::endl;
+			// std::cout << vTempCurrentIndex.size() << " " << tmpFeatureValue.size() << std::endl;
+			// std::cout << curDevia << " " << vTempFeatureIndex[i] << " " << tmpFeatureValue[vTempCurrentIndex[j]] << std::endl;
 #endif
 			if (curDevia < minDevia) {
 				minDevia = curDevia;
@@ -158,8 +156,9 @@ void RegressionTree::optSplitPos(int &nOptFeatureIndex,
 			}
 #endif
 		}
-
 	}
+	std::cout << std::endl;
+	std::cout << "helo" << std::endl;
 }
 
 void RegressionTree::splitData(suml::basic::Node<float>* &top,

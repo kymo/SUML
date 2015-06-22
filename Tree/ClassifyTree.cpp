@@ -99,18 +99,22 @@ void ClassificationTree::optSplitPos(int &nOptFeatureIndex,
 			int32_t t = rand() % vFeatureIndex.size();
 			std::swap(vFeatureIndex[i], vFeatureIndex[t]);
 		}
+		vTempFeatureIndex.assign(vFeatureIndex.begin(),	vFeatureIndex.begin() + getRandFeatureCnt());
+	} else {
+		vTempFeatureIndex.assign(vFeatureIndex.begin(), vFeatureIndex.end());
 	}
 		
-	vTempFeatureIndex.assign(vFeatureIndex.begin(),	vFeatureIndex.begin() + getRandFeatureCnt());
 	
+
 	// gini data
 	int32_t totLabelCnt = vCurrentIndex.size();
 
-	for (int32_t i = 0; i < vTempFeatureIndex.size(); ++i) {
-		
+	for (int i = 0; i < vTempFeatureIndex.size(); ++i) {
+
 		std::set<int32_t> featureValueSet;
 		std::map<int32_t, int32_t> featureValCnt;
-		std::vector<int32_t> labelCnt(totLabelCnt, 0);
+		
+		std::vector<int32_t> labelCnt(getLabelCnt(), 0);
 		std::map<int32_t, std::vector<int32_t> > featureLabelCnt;
 
 		for (int j = 0; j < vCurrentIndex.size(); ++j) {
@@ -121,37 +125,46 @@ void ClassificationTree::optSplitPos(int &nOptFeatureIndex,
 			featureValueSet.insert(val);
 
 			if (featureValCnt.find(val) == featureValCnt.end()) {
+			
 				featureValCnt[val] = 1;
 				std::vector<int32_t> t(getLabelCnt(), 0);
 				featureLabelCnt[val] = t;
+				featureLabelCnt[val][label] += 1;
+			
 			} else {
+			
 				featureValCnt[val] += 1;
 				featureLabelCnt[val][label] += 1;
+			
 			}
 
 			labelCnt[label] += 1;
 		}	
-
+		
 		for (std::set<int32_t>::iterator it = featureValueSet.begin(); it != featureValueSet.end(); ++it) {
 			int32_t val = *it;
 			int cnt = featureValCnt[val];
+			
 			std::vector<int32_t> labelNum = featureLabelCnt[val];
 			float gini = 0.0;
-
-			float lTot = 0.0;
 			float rTot = 0.0;
+			float lTot = 0.0;
 			for (int32_t k = 0; k < getLabelCnt(); ++k) {
+
 				lTot += labelNum[k] * labelNum[k] * 1.0 / (cnt * cnt);
 				rTot += (labelCnt[k] - labelNum[k]) * (labelCnt[k] - labelNum[k]) * 1.0 /
 						((totLabelCnt - cnt) * (totLabelCnt - cnt));
-			}
-			gini = (1 - lTot) * cnt * 1.0 + (1 - rTot) * (totLabelCnt - cnt) * 1.0;
-			gini = gini / totLabelCnt;	
 			
+			}
+			std::cout << lTot << " " << rTot << std::endl;
+			gini = (1 - lTot) * cnt * 1.0 + (1 - rTot) * (totLabelCnt - cnt) * 1.0;
+			gini = gini / totLabelCnt;
+			std::cout << gini << std::endl;
 			if (gini < minDevia) {
 				gini = minDevia;
 				fOptFeatureVal = val;
-				nOptFeatureIndex = vFeatureIndex[i];
+				nOptFeatureIndex = vTempFeatureIndex[i];
+				std::cout << fOptFeatureVal << " " << nOptFeatureIndex << std::endl;
 			}
 		}
 	}	
@@ -163,22 +176,28 @@ void ClassificationTree::splitData(suml::basic::Node<int32_t>* &top,
 		const std::vector<int32_t> &vTmpCurrentIndex,
    		std::vector<int32_t> &vLeftIndex,
 		std::vector<int32_t> &vRightIndex) {
-
+	
+	std::cout << "test data" << std::endl;
 	std::map<int32_t, int32_t> labelCnt;
 	int32_t cnt = 0, label;
-
+	std::cout << cnt << std::endl;
 	for (int32_t i = 0; i < vTmpCurrentIndex.size(); i ++) {
 		int32_t tmpLabel = getTrainingY()[vTmpCurrentIndex[i]];
+		
 		if (labelCnt.find(tmpLabel) == labelCnt.end()) {
 			labelCnt[tmpLabel] = 0;
+		
 		} else {
 			labelCnt[tmpLabel] = 1;
 		}
+		
 		if (cnt < labelCnt[tmpLabel]) {
 			label = tmpLabel;
 			cnt = labelCnt[tmpLabel];
 		}
 	}
+
+	std::cout << "Split:" << nOptFeatureIndex << " " << fOptFeatureVal << std::endl;
 	
 	top->m_nCurrentOptSplitIndex = nOptFeatureIndex;
 	top->m_fCurrentOptSplitValue = fOptFeatureVal;

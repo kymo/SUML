@@ -15,13 +15,12 @@ int main(int argv, char* argc[]) {
     }
 
     // load feature
-    int32_t sampleCnt = 0, featureCnt = 0;
-    int32_t maxDepth, maxNodePath;
+    int sampleCnt = 0, featureCnt = 0;
+    int maxDepth, maxNodePath;
 	std::ifstream fis(argc[1]);
 	std::string line;
     std::vector<float> vctLabel;
 	std::vector<std::vector<float> > vctFeature;
-	std::cout << "test error" << std::endl;
 	
 	while (getline(fis, line)) {
         sampleCnt += 1;
@@ -37,7 +36,7 @@ int main(int argv, char* argc[]) {
         }
         vctFeature.push_back(tempFeature);
     }
-    int32_t splitPos = (int)(0.8 * sampleCnt);
+    int splitPos = (int)(0.8 * sampleCnt);
 	std::vector<int32_t> vCurrentIndex;
 	for (int32_t i = 0; i < splitPos; i ++) {
 		vCurrentIndex.push_back(i);
@@ -64,10 +63,7 @@ int main(int argv, char* argc[]) {
 	}
     // train the regreTree 
 	
-	std::cout << "here" << std::endl;
-	
-	suml::tree::ClassificationTree* regreTree = new suml::tree::ClassificationTree(maxDepth, maxNodePath, isMultiThreadOn, 2, false);
-
+	suml::tree::ClassificationTree * regreTree = new suml::tree::ClassificationTree(maxDepth, maxNodePath, isMultiThreadOn, 2, false);	
 	
 	if (regreTree->getMultiThreadOn()) {
 		std::cout << "ON" << std::endl;
@@ -75,8 +71,19 @@ int main(int argv, char* argc[]) {
 		std::cout << "NO" << std::endl;
 	}
 	
-	regreTree->setData(vctTrainFeature, vctTrainLabel);
+	
 
+	suml::feature::feature_discretization(argc[5], vctTrainFeature);
+	
+	for (int i = 0; i < vctTrainFeature.size(); ++i) {
+		for (int j = 0; j < vctTrainFeature[i].size(); ++j) {
+			std::cout << vctTrainFeature[i][j] << " ";
+		}
+		std::cout<< std::endl;
+	}
+
+	regreTree->setData(vctTrainFeature, vctTrainLabel);
+	regreTree->getMinSampleCnt() = 5;
 	clock_t start = clock();
 
 	regreTree->train();
@@ -86,10 +93,10 @@ int main(int argv, char* argc[]) {
    	for (size_t i = 0; i < vctTrainFeature.size(); ++i) {
         std::cout << i << " " << vctTrainLabel[i] << " vs " << regreTree->predict(vctTrainFeature[i]) << std::endl;
     }
+	std::cout << "nihao" << std::endl;
 	/*
-    for (size_t i = 0; i < vctTestFeature.size(); ++i) {
+	for (size_t i = 0; i < vctTestFeature.size(); ++i) {
         std::cout << vctTestLabel[i] << " vs " << regreTree->predict(vctTestFeature[i]) << std::endl;
-    }
-	*/
+    }*/
     return 0;
 }

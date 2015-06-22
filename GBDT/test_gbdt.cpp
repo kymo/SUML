@@ -2,6 +2,7 @@
 /* test tree */
 
 #include "GBDT.h"
+#include "Util.h"
 
 int main(int argv, char* argc[]) {
 
@@ -60,6 +61,8 @@ int main(int argv, char* argc[]) {
     // train the regreTree 
 	suml::gbdt::GradientBoostingRegressionTree *g = new suml::gbdt::GradientBoostingRegressionTree(treeNum, maxDepth, maxNodePath, minSampleCnt, learningRate, isMultiThreadOn);
 	
+	g->set_data(vctTrainFeature, vctTrainLabel);
+
 	clock_t start = clock();
 	g->train(DEFAULT);
 	clock_t end = clock();

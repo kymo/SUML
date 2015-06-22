@@ -7,8 +7,7 @@ INC=-I ${DIR}/LR \
 	-I ${DIR}/Matrix\
    	-I ${DIR}/NN\
 	-I ${DIR}/Tree \
-	-I ${DIR}/Feature \
-	-I ${DIR}/GBDT
+	-I ${DIR}/Feature 
 
 ## Logistic Regression Test
 TEST_LR_SRC=${DIR}/LR/test_lr.cpp
@@ -88,7 +87,7 @@ clean:
 	cd Feature;make clean;
 	cd Tree;make clean;
 	cd GBDT;make clean;
-	rm -rf *.o ${TEST_LR} ${TEST_NN} ${TEST_REG_TREE} ${TEST_CAL_TREE} ${TEST_GBDT}
+	rm -rf *.o ${TEST_LR} ${TEST_NN} ${TEST_REG_TREE} ${TEST_CAL_TREE}
 	rm -rf ${DIR}/Obj/*.o
 
 target:
