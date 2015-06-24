@@ -51,7 +51,7 @@ void* selectFeatureFunc(void* param) {
 
 }	
 
-void RegressionTree::optSplitPosMultiThread(int &nOptFeatureIndex,
+void C45::optSplitPosMultiThread(int &nOptFeatureIndex,
             float &fOptFeatureVal,
             std::vector<int32_t> &vCurrentIndex,
             std::vector<int32_t> &vFeatureIndex) {
@@ -83,7 +83,7 @@ void RegressionTree::optSplitPosMultiThread(int &nOptFeatureIndex,
 	}
 }
 
-void RegressionTree::optSplitPos(int &nOptFeatureIndex,
+void C45::optSplitPos(int &nOptFeatureIndex,
             float &fOptFeatureVal,
             std::vector<int32_t> &vCurrentIndex,
             std::vector<int32_t> &vFeatureIndex) {	
@@ -162,7 +162,7 @@ void RegressionTree::optSplitPos(int &nOptFeatureIndex,
 	}
 }
 
-void RegressionTree::splitData(suml::basic::Node<float>* &top,
+void C45::splitData(suml::basic::Node<float>* &top,
 		const int &nOptFeatureIndex,
 		const float &fOptFeatureVal,
 		const std::vector<int32_t> &vTmpCurrentIndex,
@@ -188,7 +188,7 @@ void RegressionTree::splitData(suml::basic::Node<float>* &top,
 	}
 }
 
-float RegressionTree::predict( const std::vector<float> &testFeatureX) {
+float C45::predict( const std::vector<float> &testFeatureX) {
     
 	suml::basic::Node<float>* oTreeNode = getTreeRootNode();
 	while (true) {

@@ -38,6 +38,8 @@
 namespace suml {
 namespace util {
 
+int rand_int(int num, int sed);
+
 void split(const std::string &line, char tag, std::vector<std::string> &vctSplitRes) ;
 
 

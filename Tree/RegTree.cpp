@@ -4,7 +4,6 @@
 #include "RegTree.h"
 
 namespace suml {
-
 namespace tree {
 
 void* selectFeatureFunc(void* param) {	
@@ -168,6 +167,7 @@ void RegressionTree::splitData(suml::basic::Node<float>* &top,
    		std::vector<int32_t> &vLeftIndex,
 		std::vector<int32_t> &vRightIndex) {
 
+	std::cout << "nihaoma~~~" << std::endl;
 	float label = 0.0;
 	for (int32_t i = 0; i < vTmpCurrentIndex.size(); i ++) {
 		label += getTrainingY()[vTmpCurrentIndex[i]];

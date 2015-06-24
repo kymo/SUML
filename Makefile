@@ -7,8 +7,8 @@ INC=-I ${DIR}/LR \
 	-I ${DIR}/Matrix\
    	-I ${DIR}/NN\
 	-I ${DIR}/Tree \
-	-I ${DIR}/Feature 
-
+	-I ${DIR}/Feature \
+	-g
 ## Logistic Regression Test
 TEST_LR_SRC=${DIR}/LR/test_lr.cpp
 TEST_LR_O=${DIR}/Obj/test_lr.o 
@@ -40,7 +40,7 @@ TEST_GBDT_ALIAS_O=${DIR}/Obj/RegTree.o ${DIR}/Obj/Util.o -lpthread ${DIR}/Obj/Fe
 TEST_GBDT=${DIR}/Bin/gbdt
 
 
-all:${TEST_NN} ${TEST_LR} ${TEST_REG_TREE} ${TEST_CAL_TREE} ${TEST_GBDT}
+all:${TEST_NN} ${TEST_LR} ${TEST_CAL_TREE} ${TEST_REG_TREE} ${TEST_CAL_TREE} ${TEST_GBDT}
 
 .PHONY : all target clean
 

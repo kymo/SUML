@@ -19,7 +19,7 @@ int main(int argv, char* argc[]) {
     int maxDepth, maxNodePath;
 	std::ifstream fis(argc[1]);
 	std::string line;
-    std::vector<float> vctLabel;
+    std::vector<int32_t> vctLabel;
 	std::vector<std::vector<float> > vctFeature;
 	
 	while (getline(fis, line)) {
@@ -43,8 +43,8 @@ int main(int argv, char* argc[]) {
 	}
     std::vector<std::vector<float> > vctTrainFeature(vctFeature.begin(), vctFeature.begin() + splitPos);
     std::vector<std::vector<float> > vctTestFeature(vctFeature.begin() + splitPos, vctFeature.end());
-    std::vector<int32_t> vctTrainLabel(vctLabel.begin(), vctLabel.begin() + splitPos);
-    std::vector<int32_t> vctTestLabel(vctLabel.begin() + splitPos, vctLabel.end());
+    std::vector<float> vctTrainLabel(vctLabel.begin(), vctLabel.begin() + splitPos);
+    std::vector<float> vctTestLabel(vctLabel.begin() + splitPos, vctLabel.end());
     
 	if (vctFeature.size() <= 0) {
         std::cout << "Loading Feature Error!" << std::endl;
@@ -55,12 +55,6 @@ int main(int argv, char* argc[]) {
     maxNodePath = atoi(argc[2]);
     maxDepth = atoi(argc[3]);
 	bool isMultiThreadOn = atoi(argc[4]);
-	
-	if (isMultiThreadOn) {
-		std::cout << "True" << std::endl;
-	} else {
-		std::cout << "False" << std::endl;
-	}
     // train the regreTree 
 	
 	suml::tree::ClassificationTree * regreTree = new suml::tree::ClassificationTree(maxDepth, maxNodePath, isMultiThreadOn, 2, false);	
@@ -70,17 +64,15 @@ int main(int argv, char* argc[]) {
 	} else {
 		std::cout << "NO" << std::endl;
 	}
-	
-	
 
 	suml::feature::feature_discretization(argc[5], vctTrainFeature);
-	
 	for (int i = 0; i < vctTrainFeature.size(); ++i) {
 		for (int j = 0; j < vctTrainFeature[i].size(); ++j) {
-			std::cout << vctTrainFeature[i][j] << " ";
+			std::cout << vctTrainFeature[i][j] << "\t";
 		}
-		std::cout<< std::endl;
+		std::cout << vctTrainLabel[i] << std::endl;
 	}
+
 
 	regreTree->setData(vctTrainFeature, vctTrainLabel);
 	regreTree->getMinSampleCnt() = 5;
@@ -90,13 +82,26 @@ int main(int argv, char* argc[]) {
 	clock_t end = clock();
 
 	std::cout << "Cost:" << end - start << std::endl;
-   	for (size_t i = 0; i < vctTrainFeature.size(); ++i) {
+
+	int right = 0, tot = 0;
+	for (size_t i = 0; i < vctTrainFeature.size(); ++i) {
         std::cout << i << " " << vctTrainLabel[i] << " vs " << regreTree->predict(vctTrainFeature[i]) << std::endl;
-    }
-	std::cout << "nihao" << std::endl;
-	/*
+    	if (vctTrainLabel[i] == regreTree->predict(vctTrainFeature[i])) {
+			right += 1;
+		}
+		tot += 1;
+	}
+	std::cout << "Training Set Precision:" << right * 1.0 / tot << std::endl;
+	right = 0, tot = 0;
+	suml::feature::feature_discretization(argc[5], vctTestFeature);
 	for (size_t i = 0; i < vctTestFeature.size(); ++i) {
         std::cout << vctTestLabel[i] << " vs " << regreTree->predict(vctTestFeature[i]) << std::endl;
-    }*/
+    	if (vctTestLabel[i] == regreTree->predict(vctTestFeature[i])) {
+			right += 1;
+		}
+		tot += 1;
+	}
+	std::cout << "Testing Set Precision:" << right * 1.0 / tot << std::endl;
+
     return 0;
 }

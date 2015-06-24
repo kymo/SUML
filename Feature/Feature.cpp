@@ -52,7 +52,7 @@ void feature_discretization(const std::string &dis_primitive_str,
    	// split the 1-7the feature into 10segments and split the 2th feature into 5th
 	int sample_size = feature.size();	
 	std::vector<std::string> dis_seg;
-	suml::util::split(dis_primitive_str, ';', dis_seg);
+	suml::util::split(dis_primitive_str, ',', dis_seg);
 
 	if (0 == (int32_t)dis_seg.size()) {
 		std::cerr << "Discret the feature error: bad discret primitive string!" << std::endl;

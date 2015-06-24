@@ -16,39 +16,64 @@ void* selectFeatureFuncC(void* param) {
 		tempFeatureValue[p->m_vCurrentIndex[i]] = p->m_oTree->getTrainingX()[p->m_vCurrentIndex[i]][p->m_nFeatureIndex];
 	}
 
-	p->m_oTree->sortIndexVec(vTempCurrentIndex, tempFeatureValue);
+	std::set<int32_t> featureValueSet;
+	std::map<int32_t, int32_t> featureValCnt;
 	
-	float totValue = 0.0;
-	float totSqaValue = 0.0;
+	std::vector<int32_t> labelCnt(p->m_oTree->getLabelCnt(), 0);
+	std::map<int32_t, std::vector<int32_t> > featureLabelCnt;
+
+	for (int j = 0; j < p->m_vCurrentIndex.size(); ++j) {
+		int32_t val = (int32_t)p->m_oTree->getTrainingX()[p->m_vCurrentIndex[j]][p->m_nFeatureIndex];
+		int32_t label = (int32_t)p->m_oTree->getTrainingY()[p->m_vCurrentIndex[j]];
+
+		featureValueSet.insert(val);
+
+		if (featureValCnt.find(val) == featureValCnt.end()) {
+		
+			featureValCnt[val] = 1;
+			std::vector<int32_t> t(p->m_oTree->getLabelCnt(), 0);
+			featureLabelCnt[val] = t;
+			featureLabelCnt[val][label] += 1;
+		
+		} else {
+		
+			featureValCnt[val] += 1;
+			featureLabelCnt[val][label] += 1;
+		
+		}
+
+		labelCnt[label] += 1;
+	}	
 	
-	for (int32_t j = 0; j < (int32_t)vTempCurrentIndex.size(); j ++) {
-		float tmpVal = p->m_oTree->getTrainingY()[vTempCurrentIndex[j]];
-		totValue += tmpVal;
-		totSqaValue += tmpVal * tmpVal;
+	float minDevia = INT_MAX;
+	float fOptFeatureVal = 0.0;
+	int32_t totLabelCnt = p->m_vCurrentIndex.size();
+	for (std::set<int32_t>::iterator it = featureValueSet.begin(); it != featureValueSet.end(); ++it) {
+		int32_t val = *it;
+		int cnt = featureValCnt[val];
+		
+		std::vector<int32_t> labelNum = featureLabelCnt[val];
+		float gini = 0.0;
+		float rTot = 0.0;
+		float lTot = 0.0;
+		for (int32_t k = 0; k < p->m_oTree->getLabelCnt(); ++k) {
+
+			lTot += labelNum[k] * labelNum[k] * 1.0 / (cnt * cnt);
+			rTot += (labelCnt[k] - labelNum[k]) * (labelCnt[k] - labelNum[k]) * 1.0 /
+					((totLabelCnt - cnt) * (totLabelCnt - cnt));
+		
+		}
+		gini = (1 - lTot) * cnt * 1.0 + (1 - rTot) * (totLabelCnt - cnt) * 1.0;
+		gini = gini / totLabelCnt;
+		if (gini < minDevia) {
+			gini = minDevia;
+			fOptFeatureVal = val;
+		}
 	}
 
-	float fOptFeatureVal = 0.0;	
-	float curTotVal = 0.0;
-	float curTotSqaVal = 0.0;
-	float minDevia = INT_MAX;
-	for (int32_t j = 0; j < (int32_t)vTempCurrentIndex.size(); ++ j) {
-		float tmpVal = p->m_oTree->getTrainingY()[vTempCurrentIndex[j]];
-		curTotVal += tmpVal;
-		curTotSqaVal += tmpVal * tmpVal;
-		float curDevia = totSqaValue - curTotVal * curTotVal / (j + 1);
-		if (j + 1 != (int32_t)vTempCurrentIndex.size()) {
-			curDevia -= (totValue - curTotVal) * (totValue - curTotVal) / (vTempCurrentIndex.size() - j - 1);
-		}
-		if (curDevia < minDevia) {
-			minDevia = curDevia;
-			fOptFeatureVal = tempFeatureValue[vTempCurrentIndex[j]];
-		}
-	}
-	
 	char ret[64];
 	sprintf(ret, "%f+%f", fOptFeatureVal, minDevia);
 	return (void*)ret;
-
 }	
 
 void ClassificationTree::optSplitPosMultiThread(int &nOptFeatureIndex,
@@ -60,7 +85,7 @@ void ClassificationTree::optSplitPosMultiThread(int &nOptFeatureIndex,
 	int featureCnt = vFeatureIndex.size();
 	std::vector<pthread_t> vThreadIds(featureCnt);
 	for (int32_t i = 0; i < featureCnt; ++ i) {
-		suml::basic::ThreadParam<int32_t> *param = new suml::basic::ThreadParam<int32_t>(this, vCurrentIndex, vFeatureIndex[i]);
+		suml::basic::ThreadParam<float> *param = new suml::basic::ThreadParam<float>(this, vCurrentIndex, vFeatureIndex[i]);
 		pthread_create(&vThreadIds[i], NULL, selectFeatureFuncC, (void*)param);
 	}
 
@@ -81,6 +106,7 @@ void ClassificationTree::optSplitPosMultiThread(int &nOptFeatureIndex,
 			fOptFeatureVal = fOptValue;
 		}
 	}
+
 }
 
 void ClassificationTree::optSplitPos(int &nOptFeatureIndex,
@@ -89,7 +115,7 @@ void ClassificationTree::optSplitPos(int &nOptFeatureIndex,
             std::vector<int32_t> &vFeatureIndex) {	
     
 	float minDevia = INT_MAX;
-	
+
 	// sample the feature
 	std::vector<int32_t> vTempFeatureIndex;
 
@@ -103,8 +129,6 @@ void ClassificationTree::optSplitPos(int &nOptFeatureIndex,
 	} else {
 		vTempFeatureIndex.assign(vFeatureIndex.begin(), vFeatureIndex.end());
 	}
-		
-	
 
 	// gini data
 	int32_t totLabelCnt = vCurrentIndex.size();
@@ -156,39 +180,34 @@ void ClassificationTree::optSplitPos(int &nOptFeatureIndex,
 						((totLabelCnt - cnt) * (totLabelCnt - cnt));
 			
 			}
-			std::cout << lTot << " " << rTot << std::endl;
 			gini = (1 - lTot) * cnt * 1.0 + (1 - rTot) * (totLabelCnt - cnt) * 1.0;
 			gini = gini / totLabelCnt;
-			std::cout << gini << std::endl;
 			if (gini < minDevia) {
 				gini = minDevia;
 				fOptFeatureVal = val;
 				nOptFeatureIndex = vTempFeatureIndex[i];
-				std::cout << fOptFeatureVal << " " << nOptFeatureIndex << std::endl;
 			}
 		}
 	}	
 }
 
-void ClassificationTree::splitData(suml::basic::Node<int32_t>* &top,
+void ClassificationTree::splitData(suml::basic::Node<float>* &top,
 		const int &nOptFeatureIndex,
 		const float &fOptFeatureVal,
 		const std::vector<int32_t> &vTmpCurrentIndex,
    		std::vector<int32_t> &vLeftIndex,
 		std::vector<int32_t> &vRightIndex) {
 	
-	std::cout << "test data" << std::endl;
 	std::map<int32_t, int32_t> labelCnt;
 	int32_t cnt = 0, label;
-	std::cout << cnt << std::endl;
+	
 	for (int32_t i = 0; i < vTmpCurrentIndex.size(); i ++) {
 		int32_t tmpLabel = getTrainingY()[vTmpCurrentIndex[i]];
 		
 		if (labelCnt.find(tmpLabel) == labelCnt.end()) {
-			labelCnt[tmpLabel] = 0;
-		
-		} else {
 			labelCnt[tmpLabel] = 1;
+		} else {
+			labelCnt[tmpLabel] += 1;
 		}
 		
 		if (cnt < labelCnt[tmpLabel]) {
@@ -197,7 +216,6 @@ void ClassificationTree::splitData(suml::basic::Node<int32_t>* &top,
 		}
 	}
 
-	std::cout << "Split:" << nOptFeatureIndex << " " << fOptFeatureVal << std::endl;
 	
 	top->m_nCurrentOptSplitIndex = nOptFeatureIndex;
 	top->m_fCurrentOptSplitValue = fOptFeatureVal;
@@ -212,9 +230,9 @@ void ClassificationTree::splitData(suml::basic::Node<int32_t>* &top,
 	}
 }
 
-int32_t ClassificationTree::predict( const std::vector<float> &testFeatureX) {
+float ClassificationTree::predict( const std::vector<float> &testFeatureX) {
     
-	suml::basic::Node<int32_t>* oTreeNode = getTreeRootNode();
+	suml::basic::Node<float>* oTreeNode = getTreeRootNode();
 	while (true) {
         
 		if (NULL == oTreeNode->m_oLeft && NULL == oTreeNode->m_oRight) {

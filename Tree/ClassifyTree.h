@@ -1,5 +1,5 @@
-#ifndef __TREE_H__
-#define __TREE_H__
+#ifndef __ClASSIFY_TREE_H__
+#define __CLASSIFY_TREE_H__
 
 #include "BaseTree.h"
 #include "Feature.h"
@@ -7,8 +7,7 @@
 namespace suml {
 namespace tree {
 
-class ClassificationTree : public suml::basic::Tree<int32_t> {
-
+class ClassificationTree : public suml::basic::Tree<float> {
 public:
 
 	ClassificationTree() {} 
@@ -17,19 +16,19 @@ public:
 			int32_t maxDepth, 
 			bool isMultiThreadOn,
 			int32_t labelCnt,
-			bool ensemble) : suml::basic::Tree<int32_t>(maxNodeCnt, maxDepth, isMultiThreadOn, labelCnt, ensemble) {}
+			bool ensemble) : suml::basic::Tree<float>(maxNodeCnt, maxDepth, isMultiThreadOn, labelCnt, ensemble) {}
 	
 	void optSplitPos(int &nOptFeatureIndex,
                 float &nOptFeatureVal,
                 std::vector<int32_t> &vCurrentIndex,
                 std::vector<int32_t> &vFeatureIndex); 
-	
+
 	void optSplitPosMultiThread(int &nOptFeatureIndex,
 			float &nOptFeatureVal,
 			std::vector<int32_t> &vCurrentIndex,
 			std::vector<int32_t> &vFeatureIndex);
 
-	void splitData(struct suml::basic::Node<int32_t>* &node,
+	void splitData(struct suml::basic::Node<float>* &node,
 		const int &nOptFeatureIndex,
 		const float &fOptFeatureVal,
 		const std::vector<int32_t> &vTempCurrentIndex,
@@ -38,7 +37,7 @@ public:
 
 	friend void* selectFeatureFuncC(void* param);
 
-    int32_t predict(const std::vector<float> &testFeatureX);
+    float predict(const std::vector<float> &testFeatureX);
 
 };
 

@@ -5,6 +5,20 @@ namespace suml {
 
 namespace util {
 
+
+int random_int(int n, int seed) {
+	long long multiplier = 0x5DEECE66DL, mask = (1L << 48) - 1, addend = 0xBL;
+	if (n <= 1) return 0;
+	if ((n & -n) == n) {
+		return (int) ((n * (long) ((int) ((seed = (seed * multiplier + addend) & mask) >> 17))) >> 31);
+	}
+	int bits, val;
+	do {
+		bits = (int) ((seed = (seed * multiplier + addend) & mask) >> 17);
+		val = bits % n;
+	} while (bits - val + (n - 1) < 0);
+	return val;
+}
 void 
 split(const std::string &line, char tag, std::vector<std::string> &vctSplitRes) {
     std::string tempStr = "";

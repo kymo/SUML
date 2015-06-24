@@ -9,9 +9,10 @@ ClassifyTree_SRC=${DIR}/ClassifyTree.cpp
 
 INC=-I ${DIR}/ \
 	-I ${DIR}/../Util\
-	-I ${DIR}/../Feature
+	-I ${DIR}/../Feature \
+	-g
 
-all:${RegTree_O} ${ClassifyTree_O}
+all: ${ClassifyTree_O} ${RegTree_O}
 GCC=g++
 
 ${RegTree_O}:${LR_SRC}

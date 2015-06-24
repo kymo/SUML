@@ -6,13 +6,13 @@
 namespace suml {
 namespace tree {
 
-class RegressionTree : public suml::basic::Tree<float> {
+class C45 : public suml::basic::Tree<float> {
 
 public:
     
-	RegressionTree() {} 
+	C45() {} 
     
-	RegressionTree(int32_t maxNodeCnt, 
+	C45(int32_t maxNodeCnt, 
 			int32_t maxDepth, 
 			bool isMultiThreadOn,
 			bool ensemble) : suml::basic::Tree<float>(maxNodeCnt, maxDepth, isMultiThreadOn, ensemble) {

@@ -1,5 +1,5 @@
-#ifndef __TREE_H__
-#define __TREE_H__
+#ifndef __REg_TREE_H__
+#define __REG_TREE_H__
 
 #include "BaseTree.h"
 
