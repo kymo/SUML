@@ -3,8 +3,7 @@ DIR=$(shell pwd)
 OBJ=${DIR}/../Obj/Matrix.o
 SRC=${DIR}/Matrix.cpp
 
-CFLAGS=-g -I ${DIR}
-
+CFLAGS=-g -I ${DIR} -I ${DIR}/../Util
 GCC=g++
 
 ${OBJ}:${SRC}

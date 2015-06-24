@@ -5,11 +5,13 @@
 #include <string>
 #include <vector>
 #include <map>
+#include <algorithm>
 #include <queue>
 #include <set>
 #include <cmath>
 #include <fstream>
 #include <stdio.h>
+#include <string.h>
 #include <stdlib.h>
 #include <time.h>
 #include <math.h>

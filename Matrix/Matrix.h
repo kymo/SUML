@@ -1,10 +1,7 @@
 #ifndef __MATRIX_H_
 #define __MATRIX_H_
 
-#include <iostream>
-#include <string>
-#include <vector>
-#include <cmath>
+#include "Util.h"
 
 namespace suml {
 namespace matrix {
