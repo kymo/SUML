@@ -149,21 +149,10 @@ void LR::train(int32_t opt_type) {
 	
 	for (int32_t iter = 0; iter < _max_iter_cnt; iter ++) {
 	
-		for (int32_t j = 0; j < _feature_dim; ++j ) {
-		/*
-			   if (_w[j] > 1.0 || _w[j] < 0) {
-				_w[j] = rand() % 100 / 100.0;
-			}
-		*/
-			std::cout << _w[j] << " ";
-		}
-		std::cout << std::endl;
 		float temp_value = calc_loss_value();
 #ifdef DEBUG
 		std::cout << "iter " << iter << " : " <<  temp_value << std::endl;
 #endif	
-		
-		
 		if (opt_type == GD) {
 			gradient_descent(_w, _learning_rate, _feature, _label, _reg_type, _lambda);
 			if ( fabs(temp_value - last_value) < LR_EPS ) {

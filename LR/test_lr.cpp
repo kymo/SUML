@@ -56,20 +56,13 @@ int main(int argv, char* argc[]) {
 
 	
   	
-	//	lr->feature_normalize(MIN_MAX_NOR_TYPE, vctTestFeature);
 
 	
 	lr->set_data(vctTrainFeature, vctTrainLabel);
-	suml::feature::feature_discretization("0-12:10", vctTrainFeature);
-	for(int32_t i = 0; i < lr->_sample_size; ++i) {
-		
-		for (int32_t j = 0; j < lr->_feature_dim; ++j) {
-			std::cout << lr->_feature[i][j] << " ";
-		}
-		std::cout << std::endl;
-	}	
-	/*
-	//lr->feature_normalize(nor_type, vctTrainFeature);	
+	
+	suml::feature::feature_normalize(nor_type, vctTrainFeature);	
+	suml::feature::feature_normalize(nor_type, vctTestFeature);
+	
 	lr->train(opt_type);
 	
 
@@ -102,5 +95,4 @@ int main(int argv, char* argc[]) {
 		lr->dump_model(argc[6]);
 	}
 	return 0;
-	*/
 }

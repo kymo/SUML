@@ -69,16 +69,16 @@ public:
 			std::vector<std::vector<float> > &feature,
 			std::vector<T> &label) {}
 
-	virtual T forest_predict(const std::vector<float> &feature) {}
-
-	void train();
+	virtual T f_predict(const std::vector<float> &feature) {
+	}
+	void train(int32_t opt_type);
 	void load_model(const char* file_name);
 	void dump_model(const char* file_name);
 	T predict(const std::vector<float> &feature);
 };
 
 template <class T>
-void RandomForest<T>::train() {
+void RandomForest<T>::train(int32_t opt_type) {
 	
 	for (int32_t i = 0; i < _tree_num; ++i ) {
 	
@@ -116,7 +116,7 @@ void RandomForest<T>::dump_model(const char* file_name) {}
 
 template <class T>
 T RandomForest<T>::predict(const std::vector<float> &feature) {
-	return forest_predict(feature);
+	return f_predict(feature);
 }
 
 }

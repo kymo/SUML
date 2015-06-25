@@ -10,7 +10,7 @@ int main(int argv, char* argc[]) {
     std::cout << "Loading the tree" << std::endl;
     
 	if (argv < 5) {
-        std::cout << "Usage: ./test_tree [training_file] [max_depth] [max_node_path] [multi thread or not]" << std::endl;
+        std::cout << "Usage: ./cla_tree [training_file] [max_depth] [max_node_path] [multi thread or not]" << std::endl;
         return 0;
     }
 
@@ -101,6 +101,7 @@ int main(int argv, char* argc[]) {
 		}
 		tot += 1;
 	}
+	std::cout << right << " " << tot << std::endl;
 	std::cout << "Testing Set Precision:" << right * 1.0 / tot << std::endl;
 
     return 0;

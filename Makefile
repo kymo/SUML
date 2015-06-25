@@ -8,7 +8,10 @@ INC=-I ${DIR}/LR \
    	-I ${DIR}/NN\
 	-I ${DIR}/Tree \
 	-I ${DIR}/Feature \
+	-I ${DIR}/RF \
+	-I ${DIR}/SVM \
 	-g
+
 ## Logistic Regression Test
 TEST_LR_SRC=${DIR}/LR/test_lr.cpp
 TEST_LR_O=${DIR}/Obj/test_lr.o 
@@ -39,8 +42,33 @@ TEST_GBDT_O=${DIR}/Obj/test_gbdt.o
 TEST_GBDT_ALIAS_O=${DIR}/Obj/RegTree.o ${DIR}/Obj/Util.o -lpthread ${DIR}/Obj/Feature.o ${DIR}/Obj/GBDT.o
 TEST_GBDT=${DIR}/Bin/gbdt
 
+## random forest regressor
+TEST_RF_REG_SRC=${DIR}/RF/test_reg_rf.cpp
+TEST_RF_REG_O=${DIR}/Obj/test_reg_rf.o
+TEST_RF_REG_ALIAS_O=${DIR}/Obj/RegRF.o ${DIR}/Obj/Util.o -lpthread ${DIR}/Obj/Feature.o ${DIR}/Obj/RegTree.o
+TEST_RF_REG=${DIR}/Bin/rf_reg
 
-all:${TEST_NN} ${TEST_LR} ${TEST_CAL_TREE} ${TEST_REG_TREE} ${TEST_CAL_TREE} ${TEST_GBDT}
+## random forest classifier
+TEST_RF_CLA_SRC=${DIR}/RF/test_cla_rf.cpp
+TEST_RF_CLA_O=${DIR}/Obj/test_cla_rf.o
+TEST_RF_CLA_ALIAS_O=${DIR}/Obj/ClaRF.o ${DIR}/Obj/Util.o -lpthread ${DIR}/Obj/Feature.o ${DIR}/Obj/ClassifyTree.o
+TEST_RF_CLA=${DIR}/Bin/rf_cla
+
+## support vector machine
+TEST_SVM_SRC=${DIR}/SVM/test_svm.cpp
+TEST_SVM_O=${DIR}/Obj/test_svm.o
+TEST_SVM_ALIAS_O=${DIR}/Obj/SVM.o ${DIR}/Obj/Util.o -lpthread ${DIR}/Obj/Feature.o
+TEST_SVM=${DIR}/Bin/svm
+
+all:${TEST_NN} \
+	${TEST_LR} \
+	${TEST_CAL_TREE} \
+	${TEST_REG_TREE} \
+	${TEST_CAL_TREE} \
+	${TEST_GBDT} \
+	${TEST_RF_REG} \
+	${TEST_RF_CLA} \
+	${TEST_SVM}
 
 .PHONY : all target clean
 
@@ -79,6 +107,27 @@ ${TEST_GBDT}:${TEST_GBDT_O}
 ${TEST_GBDT_O}:${TEST_GBDT_SRC}
 	${GCC} -c ${TEST_GBDT_SRC} -o ${TEST_GBDT_O} ${INC}
 
+# generate random forest regression runable program
+${TEST_RF_REG}:${TEST_RF_REG_O}
+	${GCC} -o ${TEST_RF_REG} ${TEST_RF_REG_O} ${TEST_RF_REG_ALIAS_O} ${INC}
+
+${TEST_RF_REG_O}:${TEST_RF_REG_SRC}
+	${GCC} -c ${TEST_RF_REG_SRC} -o ${TEST_RF_REG_O} ${INC}
+
+# generate random forest regression runable program
+${TEST_RF_CLA}:${TEST_RF_CLA_O}
+	${GCC} -o ${TEST_RF_CLA} ${TEST_RF_CLA_O} ${TEST_RF_CLA_ALIAS_O} ${INC}
+
+${TEST_RF_CLA_O}:${TEST_RF_CLA_SRC}
+	${GCC} -c ${TEST_RF_CLA_SRC} -o ${TEST_RF_CLA_O} ${INC}
+
+# generate support vector machine runable program
+${TEST_SVM}:${TEST_SVM_O}
+	${GCC} -o ${TEST_SVM} ${TEST_SVM_O} ${TEST_SVM_ALIAS_O} ${INC}
+
+${TEST_SVM_O}:${TEST_SVM_SRC}
+	${GCC} -c ${TEST_SVM_SRC} -o ${TEST_SVM_O} ${INC}
+
 clean:
 	cd LR;make clean;
 	cd Util;make clean;
@@ -87,8 +136,11 @@ clean:
 	cd Feature;make clean;
 	cd Tree;make clean;
 	cd GBDT;make clean;
+	cd RF;make clean;
+	cd SVM;make clean;
 	rm -rf *.o ${TEST_LR} ${TEST_NN} ${TEST_REG_TREE} ${TEST_CAL_TREE}
 	rm -rf ${DIR}/Obj/*.o
+	rm -rf ${DIR}/Bin/*
 
 target:
 	cd LR;make;
@@ -98,4 +150,6 @@ target:
 	cd NN;make;
 	cd Tree;make;
 	cd GBDT;make;
+	cd RF;make;
+	cd SVM;make;
 	make;

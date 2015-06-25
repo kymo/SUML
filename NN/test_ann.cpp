@@ -79,7 +79,7 @@ int main(int argv, char* argc[]) {
 	std::cout << right * 1.0 / tot << std::endl;
 	
 	tot = 0, right = 0;
-
+	suml::feature::feature_normalize(nor_type, vctTestFeature);
 	for (int32_t i = 0; i < vctTestFeature.size(); i ++) {
 		std::vector<float> ret;
 		ann->predict(vctTestFeature[i], ret);
