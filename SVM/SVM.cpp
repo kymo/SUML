@@ -31,6 +31,19 @@ void SVM::init_alpha() {
 		_non_bound_vec_index.push_back(i);
 		_error.push_back(- _label[i]);
 	}
+	
+
+	for (int i = 0; i < _sample_size; i ++) {
+		_kernel.push_back(std::vector<float>(_sample_size, 0.0));
+	}
+
+	for (int i = 0; i < _sample_size; i ++) {
+		for (int j = i; j < _sample_size; j ++) {
+			float kernel_value = kernel_cal(_feature[i], _feature[j]);
+			_kernel[i][j] = kernel_value;
+			_kernel[j][i] = kernel_value;
+		}
+	}
 }
 
 bool SVM::fit_kkt(int i) {

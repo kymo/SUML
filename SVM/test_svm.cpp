@@ -49,6 +49,7 @@ int main(int argv, char* argc[]) {
 	suml::feature::feature_normalize(nor_type, vctTrainFeature);
 
 	svm->set_data(vctTrainFeature, vctTrainLabel);
+	svm->init_alpha();
 	svm->train(DEFAULT);
 	
 	suml::feature::feature_normalize(nor_type, vctTestFeature);
