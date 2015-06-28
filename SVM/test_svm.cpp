@@ -57,7 +57,7 @@ int main(int argv, char* argc[]) {
 	
 	int32_t tot = 0, right = 0;
 	for (int32_t i = 0; i < vctTrainFeature.size(); i ++) {
-		if (svm->predict(vctTrainFeature[i]) < 0 && vctTrainLabel[i] == 0 ||
+		if (svm->predict(vctTrainFeature[i]) < 0 && vctTrainLabel[i] == -1 ||
 				svm->predict(vctTrainFeature[i]) > 0 && vctTrainLabel[i] == 1) {
 			right += 1;
 		}
@@ -69,7 +69,7 @@ int main(int argv, char* argc[]) {
 	for (int32_t i = 0; i < vctTestFeature.size(); i ++) {
 		
 		std::cout << vctTestLabel[i] << " " << svm->predict(vctTestFeature[i]) << std::endl;
-		if (svm->predict(vctTestFeature[i]) < 0 && vctTestLabel[i] == 0 ||
+		if (svm->predict(vctTestFeature[i]) < 0 && vctTestLabel[i] == -1 ||
 				svm->predict(vctTestFeature[i]) > 0 && vctTestLabel[i] == 1) {
 			right += 1;
 		}

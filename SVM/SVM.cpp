@@ -130,8 +130,6 @@ bool SVM::inner_loop(int i) {
 	} else {
 		_b = (b1 + b2) / 2;
 	}
-	_alpha[i] = alpha_i_new;
-	_alpha[j] = alpha_j_new;
 	// update the error
 	float base_error_i = 0.0, base_error_j = 0.0;
 	
@@ -139,8 +137,12 @@ bool SVM::inner_loop(int i) {
 		base_error_i += _label[i] * _alpha[i] * _kernel[i][i];
 		base_error_j += _label[i] * _alpha[i] * _kernel[j][i];
 	}
+
 	_error[i] = base_error_i + _b - _label[i];
 	_error[j] = base_error_j + _b - _label[j];
+	
+	_alpha[i] = alpha_i_new;
+	_alpha[j] = alpha_j_new;
 		
 	return true;
 }
