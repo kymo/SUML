@@ -31,4 +31,6 @@
 ** ./Bin/rf_cla DATA/data 100 20 500 5 0 2 0-1:6
 * test regression random forest
 ** ./Bin/rf_reg DATA/housing.data 100 4 20 5 0
+* test support vector machine
+** ./Bin/svm DATA/testSet.txt 0.1 500
 
