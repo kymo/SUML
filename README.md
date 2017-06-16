@@ -1,9 +1,9 @@
-# SUML
+### SUML
 * SUML is a machine learning library written in c++, and currently, svm, random forest, gradient boosting descent tree, logistic regression and artificial neural network have been implemented in version 0.1, and the optimization process in on the go.
-* next I will add GMM and ME, maybe some kind of feature enginnering method will be added into this project too.
+* TODO: leverate parameter server to parallel these algorithms.
 
-# Makefile
-* main makefile shows up in the root directory, and the makefiles file for each module are included in each child directory, just run "make target" you can get all the test runable programs
+### Make
+* main makefile shows up in the root directory, and the makefile for each module is included in each child directory, just run "make" in the root directory you can get all the test runable programs
 
 # Module
 * Support Vector Machine(SMO)
