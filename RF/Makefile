@@ -1,22 +1,38 @@
 DIR=$(shell pwd)
 
-RegRF_O=${DIR}/../Obj/RegRF.o
-RegRF_SRC=${DIR}/RegRF.cpp
-ClaRF_O=${DIR}/../Obj/ClaRF.o
-ClaRF_SRC=${DIR}/ClaRF.cpp
+MACRO=DEBUGALL
+CFLAGS+=-pg -w -D$(MACRO) -lpthread
+SRCPATH=.
+INCLUDEPATH=${DIR}/../Feature \
+			${DIR}/../Util \
+			${DIR}/../Model \
+			${DIR}/../Tree 
+
+ALIAS=${DIR}/../Util/Util.o \
+	  ${DIR}/../Feature/Feature.o \
+	  ${DIR}/../Tree/RegTree.o \
+	  ${DIR}/../Tree/ClassifyTree.o 
 
 
-INC=-I ${DIR}/ -I ${DIR}/../Model -I ${DIR}/../Util -I ${DIR}/../Tree -I ${DIR}/../Feature
+TARGET=alias_o test_reg_rf test_cla_rf
+SOURCES=$(wildcard $(SRCPATH)/*.cpp)
+#OBJS := $(patsubst %.cpp, %.o,$(SOURCES))
+OBJS=$(SOURCES:.cpp=.o)
+CFLAGS+=$(foreach dir, $(INCLUDEPATH), -I$(dir))
 
-GCC=g++
-
-all: ${RegRF_O} ${ClaRF_O}
-
-${RegRF_O}:${RegRF_SRC}
-	${GCC} -c ${RegRF_SRC} -g ${INC} -o ${RegRF_O}
-
-${ClaRF_O}:${ClaRF_SRC}
-	${GCC} -c ${ClaRF_SRC} -g ${INC} -o ${ClaRF_O}
+all: ${TARGET}
+	@echo "Build Done!"
+	@echo $(CFLAGS)
 
 clean:
-	rm -rf ${ClaRF_O} ${RegRF_O} *.o
+	$(RM) $(OBJS) $(TARGET)
+
+alias_o:
+	g++ -c $(SOURCES) ${CFLAGS}
+
+test_reg_rf:
+	g++ ${CFLAGS} -o test_reg_rf test_reg_rf.o  RegRF.o ${ALIAS}
+
+test_cla_rf:
+	g++ ${CFLAGS} -o test_cla_rf test_cla_rf.o ClaRF.o  ${ALIAS}
+

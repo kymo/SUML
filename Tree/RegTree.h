@@ -1,4 +1,4 @@
-#ifndef __REg_TREE_H__
+#ifndef __REG_TREE_H__
 #define __REG_TREE_H__
 
 #include "BaseTree.h"
@@ -12,13 +12,10 @@ public:
     
 	RegressionTree() {} 
     
-	RegressionTree(int32_t maxNodeCnt, 
+    RegressionTree(int32_t maxNodeCnt, 
 			int32_t maxDepth, 
 			bool isMultiThreadOn,
 			bool ensemble) : suml::basic::Tree<float>(maxNodeCnt, maxDepth, isMultiThreadOn, 0, ensemble) {
-		
-		std::cout << "regression tree" << std::endl;
-	
 	}
 	
 	void optSplitPos(int &nOptFeatureIndex,

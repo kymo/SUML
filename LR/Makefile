@@ -1,14 +1,29 @@
 DIR=$(shell pwd)
 
-LR_O=${DIR}/../Obj/LR.o
-LR_SRC=${DIR}/LR.cpp
-INC=-I ${DIR}/ -I ${DIR}/../Model -I ${DIR}/../Util
+MACRO=DEBUGALL
+CFLAGS+=-pg -w -D$(MACRO)
+SRCPATH=.
+INCLUDEPATH=${DIR}/../Model \
+			${DIR}/../Util \
+			${DIR}/../Feature
 
-GCC=g++
+ALIAS=${DIR}/../Feature/Feature.o \
+	  ${DIR}/../Util/Util.o 
 
-${LR_O}:${LR_SRC}
-	${GCC} -c ${LR_SRC} -g ${INC} -o ${LR_O}
+TARGET=test_lr
+SOURCES=$(wildcard $(SRCPATH)/*.cpp)
 
+#OBJS := $(patsubst %.cpp, %.o,$(SOURCES))
+OBJS=$(SOURCES:.cpp=.o)
+CFLAGS+=$(foreach dir, $(INCLUDEPATH), -I$(dir))
 
+all: build
+	@echo "Build Done!"
+	@echo $(CFLAGS)
 clean:
-	rm -rf ${DIR}/../Obj/LR.o *.o
+	$(RM) $(OBJS) $(TARGET)
+
+build:
+	g++ -c ${CFLAGS} ${SOURCES}
+	g++ ${CFLAGS} -o ${TARGET} ${OBJS} ${ALIAS}
+

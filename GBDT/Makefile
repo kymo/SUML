@@ -1,15 +1,30 @@
 DIR=$(shell pwd)
 
-GBDT_O=${DIR}/../Obj/GBDT.o
-GBDT_SRC=${DIR}/GBDT.cpp
+MACRO=DEBUGALL
+CFLAGS+=-pg -w -D$(MACRO) -lpthread
+SRCPATH=.
+INCLUDEPATH=${DIR}/../Model \
+			${DIR}/../Util \
+			${DIR}/../Tree
 
-INC=-I ${DIR}/ -I ${DIR}/../Model -I ${DIR}/../Util -I ${DIR}/../Tree
+ALIAS=${DIR}/../Feature/Feature.o \
+	  ${DIR}/../Util/Util.o \
+	  ${DIR}/../Tree/RegTree.o
 
-GCC=g++
+TARGET=test_gbdt
+SOURCES=$(wildcard $(SRCPATH)/*.cpp)
 
-${GBDT_O}:${GBDT_SRC}
-	${GCC} -c ${GBDT_SRC} -g ${INC} -o ${GBDT_O}
+#OBJS := $(patsubst %.cpp, %.o,$(SOURCES))
+OBJS=$(SOURCES:.cpp=.o)
+CFLAGS+=$(foreach dir, $(INCLUDEPATH), -I$(dir))
 
-
+all: build
+	@echo "Build Done!"
+	@echo $(CFLAGS)
 clean:
-	rm -rf ${DIR}/../Obj/GBDT.o *.o
+	$(RM) $(OBJS) $(TARGET)
+
+build:
+	g++ -c ${CFLAGS} ${SOURCES}
+	g++ ${CFLAGS} -o ${TARGET} ${OBJS} ${ALIAS}
+

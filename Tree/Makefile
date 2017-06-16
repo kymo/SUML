@@ -1,25 +1,33 @@
-
 DIR=$(shell pwd)
 
-RegTree_O=${DIR}/../Obj/RegTree.o
-RegTree_SRC=${DIR}/RegTree.cpp
+MACRO=DEBUGALL
+CFLAGS+=-pg -w -D$(MACRO) -lpthread
+SRCPATH=.
+INCLUDEPATH=${DIR}/../Feature \
+			${DIR}/../Util \
 
-ClassifyTree_O=${DIR}/../Obj/ClassifyTree.o
-ClassifyTree_SRC=${DIR}/ClassifyTree.cpp
+ALIAS=${DIR}/../Util/Util.o \
+	  ${DIR}/../Feature/Feature.o 
 
-INC=-I ${DIR}/ \
-	-I ${DIR}/../Util\
-	-I ${DIR}/../Feature \
-	-g
+TARGET=alias_o test_reg_tree test_cla_tree
+SOURCES=$(wildcard $(SRCPATH)/*.cpp)
+#OBJS := $(patsubst %.cpp, %.o,$(SOURCES))
+OBJS=$(SOURCES:.cpp=.o)
+CFLAGS+=$(foreach dir, $(INCLUDEPATH), -I$(dir))
 
-all: ${ClassifyTree_O} ${RegTree_O}
-GCC=g++
-
-${RegTree_O}:${LR_SRC}
-	${GCC} -c ${RegTree_SRC} ${INC} -o ${RegTree_O}
-
-${ClassifyTree_O}:${ClassifyTree_SRC}
-	${GCC} -c ${ClassifyTree_SRC} ${INC} -o ${ClassifyTree_O}
+all: ${TARGET}
+	@echo "Build Done!"
+	@echo $(CFLAGS)
 
 clean:
-	rm -rf ${RegTree_O} ${ClassifyTree_O}
+	$(RM) $(OBJS) $(TARGET)
+
+alias_o:
+	g++ -c $(SOURCES) ${CFLAGS}
+
+test_reg_tree:
+	g++ ${CFLAGS} -o test_reg_tree test_reg_tree.o RegTree.o ${ALIAS}
+
+test_cla_tree:
+	g++ ${CFLAGS} -o test_cla_tree test_cla_tree.o ClassifyTree.o ${ALIAS}
+

@@ -1,13 +1,21 @@
 DIR=$(shell pwd)
 
-UTIL_O=${DIR}/../Obj/Util.o
-UTIL_SRC=${DIR}/Util.cpp
-INC=-I ${DIR}/
+MACRO=DEBUGALL
+CFLAGS+=-pg -w -D$(MACRO)
+SRCPATH=.
+INCLUDEPATH=
+SOURCES=$(wildcard $(SRCPATH)/*.cpp)
 
-GCC=g++
+#OBJS := $(patsubst %.cpp, %.o,$(SOURCES))
+OBJS=$(SOURCES:.cpp=.o)
+CFLAGS+=$(foreach dir, $(INCLUDEPATH), -I$(dir))
 
-${UTIL_O}:${UTIL_SRC}
-	${GCC} -c ${UTIL_SRC} -g ${INC} -o ${UTIL_O}
-
+all: build
+	@echo "Build Done!"
+	@echo $(CFLAGS)
 clean:
-	rm -rf *.o ${UTIL_O}
+	$(RM) $(OBJS) $(TARGET)
+
+build:
+	g++ -c ${CFLAGS} ${SOURCES}
+

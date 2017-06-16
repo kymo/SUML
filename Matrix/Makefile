@@ -1,13 +1,25 @@
-
 DIR=$(shell pwd)
-OBJ=${DIR}/../Obj/Matrix.o
-SRC=${DIR}/Matrix.cpp
 
-CFLAGS=-g -I ${DIR} -I ${DIR}/../Util
-GCC=g++
+MACRO=DEBUGALL
+CFLAGS+=-pg -w -D$(MACRO)
+SRCPATH=.
+INCLUDEPATH=${DIR}/../Util 
+ALIAS=${DIR}/../Util/Util.o 
 
-${OBJ}:${SRC}
-	${GCC} -c ${SRC} ${CFLAGS} -o ${OBJ}
+TARGET=test_matrix
+SOURCES=$(wildcard $(SRCPATH)/*.cpp)
 
+#OBJS := $(patsubst %.cpp, %.o,$(SOURCES))
+OBJS=$(SOURCES:.cpp=.o)
+CFLAGS+=$(foreach dir, $(INCLUDEPATH), -I$(dir))
+
+all: build
+	@echo "Build Done!"
+	@echo $(CFLAGS)
 clean:
-	rm -rf *.o ${OBJ}
+	$(RM) $(OBJS) $(TARGET)
+
+build:
+	g++ -c ${CFLAGS} ${SOURCES}
+	g++ ${CFLAGS} -o ${TARGET} ${OBJS} ${ALIAS}
+
