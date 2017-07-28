@@ -55,7 +55,7 @@ int32_t partition(std::vector<int32_t> &sort_index,
 void quick_sort(std::vector<int32_t> &sort_index,
             const std::map<int32_t, float> &sort_value,
             int32_t start,
-			int32_t end) ;
+            int32_t end) ;
 }
 }
 #endif
