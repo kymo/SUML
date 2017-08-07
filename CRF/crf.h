@@ -18,6 +18,9 @@ T max(T a, T b) {
 }
 
 class CRF {
+/**
+* crf class
+*/
 
 public:
     CRF(int hidden_state_cnt, int ob_state_cnt) {
@@ -37,7 +40,7 @@ public:
                 for (int k = 0; k < _hidden_state_cnt + 1;k ++) {
                     _f[i][j][k] = 0.0;
                     _lambda[i][j][k] = 0.1;
-                    _delta_lambda[i][j][k] = 0.1;
+                    _delta_lambda[i][j][k] = 0.0;
                 }
             }
         }
@@ -88,9 +91,7 @@ public:
             }
             feature.push_back(ob_state);
             label.push_back(tag);
-            std::cout << ob_state << " " << last_tag << " " << tag << std::endl;
             _f[ob_state][last_tag][tag] = 1; // feature function
-            std::cout << "end" << std::endl;
             last_tag = tag;
         }
 
@@ -117,8 +118,6 @@ public:
             const std::vector<int>& feature = train_x_features[i];
             const std::vector<int>& label = train_y_labels[i];
 
-            std::cout << std::endl;
-            std::cout << "feature end" << std::endl;
             if (feature.size() != label.size()) {
                 std::cerr << "Error training data: feature size and label size not match!" << std::endl;
                 exit(1);
@@ -129,51 +128,37 @@ public:
             std::vector<std::vector<double> > beta(T + 1, std::vector<double>(_hidden_state_cnt + 1, 0));
             // calculate alpha
             double alpha_tot_val = 0.0;
-            std::cout << "--alpha value--" << std::endl;
             for (int t = 1; t <= T; t++) {
                 for (int si = 1; si <= _hidden_state_cnt; si++) {
                     if (t == 1) {
                         // int lambda_idx = (feature[t]) * (_hidden_state_cnt + 1) * (_hidden_state_cnt + 1) + si;
                         // alpha[t][si] = _lambda[lambda_idx] * _f[feature[t]][0][si];
-                        alpha[t][si] = _lambda[feature[t]][0][si] * _f[feature[t]][0][si];
+                        alpha[t][si] = exp(_lambda[feature[t]][0][si] * _f[feature[t]][0][si]);
                     } else {
-                        alpha[t][si] = -1.0;
+                        alpha[t][si] = 0.0;
                         for (int sj = 1; sj <= _hidden_state_cnt; sj++) {
-                            int lambda_idx = (feature[t]) * _hidden_state_cnt * _hidden_state_cnt +
-                                (sj) * _hidden_state_cnt + si;
-
-                            std::cout << lambda_idx << std::endl;    
-                            alpha[t][si] = max<double>(alpha[t][si], 
-                                alpha[t - 1][sj] * _lambda[feature[t]][sj][si] * _f[feature[t]][sj][si]); 
-                        
+                            alpha[t][si] += alpha[t - 1][sj] * exp(_lambda[feature[t]][sj][si] * _f[feature[t]][sj][si]);
                         }
                     }
                     if (t == T) {
                         alpha_tot_val += alpha[t][si];
                     }
-                    std::cout << alpha[t][si] << " ";
                 }
-                std::cout << std::endl;
             }
-            std::cout << "alpha end!" << std::endl;
-            std::cout << "tot " << alpha_tot_val << std::endl;
+			std::cout << "alpha_tot_val : " << alpha_tot_val << std::endl;
             // calculate beta
             for (int t = T; t >= 1; t--) {
                 for (int si = 1; si <= _hidden_state_cnt; si++) {
                     if (t == T) {
                         beta[t][si] = 1;
                     } else {
-                        beta[t][si] = -1.0;
+                        beta[t][si] = 0.0;
                         for (int sj = 1; sj <= _hidden_state_cnt; sj++) {
-                            int lambda_idx = (feature[t + 1]) * _hidden_state_cnt * _hidden_state_cnt +
-                                (sj) * _hidden_state_cnt + si;
-                            beta[t][si] = max<double>(beta[t][si], beta[t + 1][sj] * _lambda[feature[t + 1]][sj][si] * 
-                                _f[feature[t + 1]][sj][si]);
+                            beta[t][si] += beta[t + 1][sj] * exp(_lambda[feature[t + 1]][si][sj] * 
+                                _f[feature[t + 1]][si][sj]);
                         }
                     }
-                    std::cout << beta[t][si] << " ";
                 }
-                std::cout << std::endl;
             }
 
             // calculate gradient
@@ -190,31 +175,32 @@ public:
                             }
                             // int k_idx = (feature[t]) * (_hidden_state_cnt + 1) * (_hidden_state_cnt + 1) + 
                             //    (label[t - 1]) * (_hidden_state_cnt + 1) + label[t] ;
-                            std::cout << "he1" << std::endl;
                             if (f_idx == feature[t] && s_idx == label[t - 1] && t_idx == label[t]) {
                                 v += _f[f_idx][s_idx][t_idx];
                             }
-                            std::cout << "he" << std::endl;
-                            
-                            for (int si = 1; si <= _hidden_state_cnt; si++) {
-                                for (int sj = 1; sj <= _hidden_state_cnt; sj++) {
-                                    std::cout << "0" << " " << t << " " << feature[t] << std::endl;
+                       }
+
+					   for (int t = 1; t <= T; t++) {
+						   int sj = t == 1 ? 0 : 1;
+
+                           for (; sj <= _hidden_state_cnt; sj++) {
+                                for (int si = 1; si <= _hidden_state_cnt; si++) {
                                     if (f_idx != feature[t] || s_idx != sj || t_idx != si) {
                                         continue;
                                     }
-                                    std::cout << "1" << std::endl;
-                                    double p = alpha[t - 1][sj] * _lambda[feature[t]][sj][si] * 
-                                        _f[feature[t]][sj][si] * beta[t][si];
-                                    v += p * _f[feature[t]][sj][si] / alpha_tot_val;
-                                    std::cout << "2" << std::endl;
+									double p = 0.0;
+									if (t == 1) {
+										p = exp(_lambda[feature[t]][0][si] * _f[feature[t]][0][si]) * 
+											beta[t][si];
+									} else {
+                                    	p = alpha[t - 1][sj] * exp(_lambda[feature[t]][sj][si] * 
+                                        	_f[feature[t]][sj][si]) * beta[t][si];
+									}
+                                    v -= p * _f[feature[t]][sj][si] / alpha_tot_val;
                                 }
                             }
                         }
-                        std::cout << "3" << std::endl;
-                        std::cout << f_idx << " " << s_idx << " " << t_idx << " " << v << std::endl;
-                        std::cout << _delta_lambda[0][0][0] << std::endl;
                         _delta_lambda[f_idx][s_idx][t_idx] += v;
-                        std::cout << "4t" << std::endl;
                     }
                 }
             }
@@ -226,8 +212,89 @@ public:
         }
         std::cout << "cost " << cost << std::endl;
         
+		// gradient check
+
+        for (int i = 0; i <= _ob_state_cnt; i++) {
+            for (int j = 0; j <= _hidden_state_cnt; j++) {
+                for (int k = 0; k <= _hidden_state_cnt; k++) {
+                    /// _lambda[i][j][k] = _lambda[i][j][k] + _delta_lambda[i][j][k] * eta;
+					double tv = _lambda[i][j][k];
+                	
+					
+					_lambda[i][j][k] = tv + 1.0e-4;
+					// calculate alpha
+					double f1 = 0.0;
+					for (int n = 0; n < train_x_features.size(); n++) {
+						const std::vector<int>& feature1 = train_x_features[n];
+						const std::vector<int>& label1 = train_y_labels[n];
+						int T = label1.size();
+						double alpha_tot_val1 = 0.0;
+						std::vector<std::vector<double> > alpha1(T + 1, std::vector<double>(_hidden_state_cnt + 1, 0));
+						for (int t = 1; t <= T; t++) {
+							for (int si = 1; si <= _hidden_state_cnt; si++) {
+								if (t == 1) {
+									alpha1[t][si] = exp(_lambda[feature1[t]][0][si] * _f[feature1[t]][0][si]);
+								} else {
+									alpha1[t][si] = 0.0;
+									for (int sj = 1; sj <= _hidden_state_cnt; sj++) {
+										alpha1[t][si] +=
+											alpha1[t - 1][sj] * exp(_lambda[feature1[t]][sj][si] * _f[feature1[t]][sj][si]); 
+									}
+								}
+								if (t == T) {
+									alpha_tot_val1 += alpha1[t][si];
+								}
+							}
+						}
+
+						for (int t = 1; t <= T; t++) {
+							f1 += _lambda[feature1[t]][label1[t - 1]][label1[t]] * 
+								_f[feature1[t]][label1[t - 1]][label1[t]] - log(alpha_tot_val1);
+						}
+					}
+
+					double f2 = 0.0;
+					_lambda[i][j][k] = tv - 1.0e-4;
+					// calculate alpha
+
+					for (int n = 0; n < train_x_features.size(); n++) {
+						const std::vector<int>& feature2 = train_x_features[n];
+						const std::vector<int>& label2 = train_y_labels[n];
+						int T = label2.size();
+						
+						double alpha_tot_val2 = 0.0;
+						std::vector<std::vector<double> > alpha2(T + 1, std::vector<double>(_hidden_state_cnt + 1, 0));
+						for (int t = 1; t <= T; t++) {
+							for (int si = 1; si <= _hidden_state_cnt; si++) {
+								if (t == 1) {
+									alpha2[t][si] = exp(_lambda[feature2[t]][0][si] * _f[feature2[t]][0][si]);
+								} else {
+									alpha2[t][si] = -1.0;
+									for (int sj = 1; sj <= _hidden_state_cnt; sj++) {
+										alpha2[t][si] +=
+											alpha2[t - 1][sj] * exp(_lambda[feature2[t]][sj][si] * _f[feature2[t]][sj][si]); 
+									}
+								}
+								if (t == T) {
+									alpha_tot_val2 += alpha2[t][si];
+								}
+							}
+						}
+
+						for (int t = 1; t <= T; t++) {
+							f2 += _lambda[feature2[t]][label2[t - 1]][label2[t]] * 
+								_f[feature2[t]][label2[t - 1]][label2[t]] - log(alpha_tot_val2);
+						}
+					}
+					std::cout << f1 << " " << f2 << " " << "[" << _delta_lambda[i][j][k] << "," << (f1 - f2) / (2.0e-4) << "]";
+					_lambda[i][j][k] = tv;
+				}
+            }
+			std::cout << std::endl;
+        }
+
         // update gradient
-        double eta = -0.005;
+        double eta = 0.005;
         for (int i = 0; i <= _ob_state_cnt; i++) {
             for (int j = 0; j <= _hidden_state_cnt; j++) {
                 for (int k = 0; k <= _hidden_state_cnt; k++) {
