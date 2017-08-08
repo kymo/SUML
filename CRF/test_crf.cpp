@@ -3,7 +3,7 @@
 
 void test_crf(char *file) {
 
-	CRF*crf = new CRF(4, 5000);
+	CRF*crf = new CRF(4, 594);
 	crf->read_data(file);
 	crf->train();
 }
