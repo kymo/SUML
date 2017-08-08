@@ -1,5 +1,5 @@
 ### SUML
-* SUML is a machine learning library written in c++, and currently, svm, random forest, gradient boosting descent tree, logistic regression and artificial neural network have been implemented in version 0.1, and the optimization process in on the go.
+* SUML is a machine learning library written in c++, and currently, support vector machine, random forest, gradient boosting descent tree, logistic regression, artificial neural network, conditional random fields have been implemented in version 0.1, and the optimization process in on the go.
 * TODO: leverate parameter server to parallel these algorithms.
 
 ### Make
@@ -10,6 +10,7 @@
 * Random Forests(Classification & Regression, Multithread-enabled)
 * Gradient Boosting Descent Tree(Regression & Classification, Multithread-enabled)
 * Logistic Regression(SGD,GD, l1-reg, l2-reg)
+* CRF(conditional random fields)
 * Nueral Network(Common BPNN, optimized by SGD)
 * Tree(basic tree model for random forests and gbdt, and the single tree can also be used to act as a single model)
 * Mode(basic model for these algorithms, supply the basic operation of feature)
