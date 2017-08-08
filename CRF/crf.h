@@ -180,11 +180,8 @@ public:
                                     if (f_idx != feature[t] || s_idx != 0 || t_idx != si) {
                                         continue;
                                     }
-                                    double p = 0.0;
-                                    if (t == 1) {
-                                        p = exp(_lambda[feature[t]][0][si] * _f[feature[t]][0][si]) * 
-                                            beta[t][si];
-                                    }
+                                    double p = exp(_lambda[feature[t]][0][si] * _f[feature[t]][0][si]) * 
+                                        beta[t][si];
                                     v -= p * _f[feature[t]][0][si] / alpha_tot_val;
                                }
                                continue;
@@ -195,14 +192,8 @@ public:
                                     if (f_idx != feature[t] || s_idx != sj || t_idx != si) {
                                         continue;
                                     }
-                                    double p = 0.0;
-                                    if (t == 1) {
-                                        p = exp(_lambda[feature[t]][0][si] * _f[feature[t]][0][si]) * 
-                                            beta[t][si];
-                                    } else {
-                                        p = alpha[t - 1][sj] * exp(_lambda[feature[t]][sj][si] * 
-                                            _f[feature[t]][sj][si]) * beta[t][si];
-                                    }
+                                    double p = alpha[t - 1][sj] * exp(_lambda[feature[t]][sj][si] * 
+                                        _f[feature[t]][sj][si]) * beta[t][si];
                                     v -= p * _f[feature[t]][sj][si] / alpha_tot_val;
                                 }
                             }
