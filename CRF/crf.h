@@ -175,8 +175,8 @@ public:
                        }
 
                        for (int t = 1; t <= T; t++) {
-						   if (t == 1) {
-							   for (int si = 1; si <= _hidden_state_cnt; si++) {
+                           if (t == 1) {
+                               for (int si = 1; si <= _hidden_state_cnt; si++) {
                                     if (f_idx != feature[t] || s_idx != 0 || t_idx != si) {
                                         continue;
                                     }
@@ -184,12 +184,12 @@ public:
                                     if (t == 1) {
                                         p = exp(_lambda[feature[t]][0][si] * _f[feature[t]][0][si]) * 
                                             beta[t][si];
-									}
-									v -= p * _f[feature[t]][0][si] / alpha_tot_val;
-							   }
-							   continue;
-						   } 
-							   
+                                    }
+                                    v -= p * _f[feature[t]][0][si] / alpha_tot_val;
+                               }
+                               continue;
+                           } 
+                               
                            for (int sj = 1; sj <= _hidden_state_cnt; sj++) {
                                 for (int si = 1; si <= _hidden_state_cnt; si++) {
                                     if (f_idx != feature[t] || s_idx != sj || t_idx != si) {
@@ -199,7 +199,7 @@ public:
                                     if (t == 1) {
                                         p = exp(_lambda[feature[t]][0][si] * _f[feature[t]][0][si]) * 
                                             beta[t][si];
-									} else {
+                                    } else {
                                         p = alpha[t - 1][sj] * exp(_lambda[feature[t]][sj][si] * 
                                             _f[feature[t]][sj][si]) * beta[t][si];
                                     }
@@ -216,12 +216,12 @@ public:
                 cost += _lambda[feature[t]][label[t - 1]][label[t]] * 
                     _f[feature[t]][label[t - 1]][label[t]];
             }
-			cost -= log(alpha_tot_val);
+            cost -= log(alpha_tot_val);
         }
         std::cout << "cost " << cost << std::endl;
         
         // gradient check
-		/*
+        /*
         for (int i = 0; i <= _ob_state_cnt; i++) {
             for (int j = 0; j <= _hidden_state_cnt; j++) {
                 for (int k = 0; k <= _hidden_state_cnt; k++) {
@@ -306,7 +306,7 @@ public:
                 std::cout << std::endl;
             }
         }
-		*/
+        */
         // update gradient
         double eta = 0.005;
         for (int i = 0; i <= _ob_state_cnt; i++) {

@@ -3,12 +3,12 @@
 
 void test_crf(char *file) {
 
-	CRF*crf = new CRF(4, 594);
-	crf->read_data(file);
-	crf->train();
+    CRF*crf = new CRF(4, 594);
+    crf->read_data(file);
+    crf->train();
 }
 
 int main(int argc, char*argv[]) {
-	test_crf(argv[1]);
-	return 0;
+    test_crf(argv[1]);
+    return 0;
 }
